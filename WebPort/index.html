@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRC Academy | Training Protocol</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="home-screen">
+        <h1>FRC ACADEMY</h1>
+        <p>Season 2026 Training Protocol</p>
+        <div class="card-container">
+            <button class="card neo" onclick="launchApp('neo')">NEO (REV)</button>
+            <button class="card kraken" onclick="launchApp('kraken')">KRAKEN (CTRE)</button>
+        </div>
+    </div>
+
+    <div id="app-interface" style="display:none;">
+        <div class="toolbar">
+            <button class="back-btn" onclick="goBack()">← BACK TO MENU</button>
+            <span id="mode-text"></span>
+            <button id="check-btn" class="deploy-btn">DEPLOY CODE</button>
+        </div>
+        <div class="workspace">
+            <textarea id="code-editor" spellcheck="false"></textarea>
+            <div class="sidebar">
+                <div class="xp-box">XP: <span id="xp-val">0</span></div>
+                <hr style="border: 0; border-top: 1px solid #444; margin-bottom: 20px;">
+                <div id="instructions"></div>
+            </div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+</html>
