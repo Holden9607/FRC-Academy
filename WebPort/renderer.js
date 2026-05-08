@@ -7,23 +7,19 @@ window.launchApp = (type) => {
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('app-interface').style.display = 'flex';
     
-    // Clear the editor so they have to type the code themselves
+    // Clear the box so they don't get the answer for free
     editor.value = ""; 
 
     if (type === 'kraken') {
         document.getElementById('mode-text').innerText = "KRAKEN (PHOENIX 6) TRAINING";
         document.getElementById('instructions').innerHTML = `
             <h3>Mission: Command-Based Intake</h3>
-            <p>Task: Map the intake and rollers to the <b>X Button</b>.</p>
-            <ul>
-                <li>Intake: 0.70 DutyCycleOut</li>
-                <li>Rollers: 1.0 Speed</li>
-            </ul>`;
+            <p>Task: Use <b>DutyCycleOut(0.70)</b> for the intake and <b>set(1.0)</b> for rollers.</p>`;
     } else {
         document.getElementById('mode-text').innerText = "NEO (REV) TRAINING";
         document.getElementById('instructions').innerHTML = `
             <h3>Mission: NEO Motor Control</h3>
-            <p>Task: Use the <b>A Button</b> to run the motor at 1.0 speed.</p>`;
+            <p>Task: Use <b>m_motor.set(1.0)</b> to activate the NEO.</p>`;
     }
 };
 
@@ -34,19 +30,17 @@ window.goBack = () => {
 
 document.getElementById('check-btn').addEventListener('click', () => {
     const code = editor.value.replace(/\s/g, ''); 
-    
     if (currentMode === 'kraken') {
-        // Checking for the specific Phoenix 6 DutyCycleOut syntax
         if (code.includes("DutyCycleOut(0.70)") && code.includes("m_Rollers.set(1.0)")) {
             success(150);
         } else {
-            alert("❌ Code doesn't match season standards!");
+            alert("❌ Logic Error: Check your Phoenix 6 syntax.");
         }
     } else {
         if (code.includes("m_motor.set(1.0)")) {
             success(100);
         } else {
-            alert("❌ Check your motor.set values!");
+            alert("❌ Logic Error: Motor speed must be 1.0.");
         }
     }
 });
