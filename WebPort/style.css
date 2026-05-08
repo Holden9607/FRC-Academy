@@ -1,0 +1,71 @@
+body { 
+    background: #1e1e1e; 
+    color: white; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    margin: 0; 
+    overflow: hidden; 
+}
+
+#home-screen { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100vh; 
+    text-align: center; 
+    background: linear-gradient(180deg, #1e1e1e 0%, #111111 100%);
+}
+
+h1 { 
+    letter-spacing: 6px; 
+    font-size: 3.5rem; 
+    margin-bottom: 5px; 
+}
+
+.card-container { display: flex; gap: 25px; margin-top: 30px; }
+
+.card { 
+    padding: 50px 30px; 
+    width: 240px; 
+    font-size: 1.3rem; 
+    cursor: pointer; 
+    border: 2px solid transparent; 
+    border-radius: 15px; 
+    color: white; 
+    transition: all 0.3s ease; 
+    font-weight: bold; 
+}
+
+.card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.5); }
+.neo { background: #ff6600; }
+.kraken { background: #007acc; }
+
+.toolbar { 
+    background: #2d2d2d; 
+    padding: 10px 25px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    border-bottom: 1px solid #444;
+    height: 40px;
+}
+
+.back-btn { background: #444; color: #ccc; border: 1px solid #555; padding: 6px 15px; cursor: pointer; border-radius: 4px; }
+.deploy-btn { background: #0e639c; color: white; border: none; padding: 8px 25px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+
+.workspace { display: flex; height: calc(100vh - 60px); }
+#code-editor { 
+    flex: 3; 
+    background: #1a1a1a; 
+    color: #9cdcfe; 
+    border: none; 
+    padding: 30px; 
+    font-family: 'Consolas', monospace; 
+    font-size: 18px; 
+    outline: none; 
+    line-height: 1.6; 
+    resize: none; 
+}
+
+.sidebar { flex: 1; background: #252526; padding: 25px; border-left: 1px solid #333; overflow-y: auto; }
+.xp-box { font-size: 1.6rem; color: #4ec9b0; margin-bottom: 15px; font-weight: bold; }
