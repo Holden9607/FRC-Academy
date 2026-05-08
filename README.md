@@ -5,10 +5,9 @@
 The official training tool for learning motor logic and button mapping for REV and CTRE hardware.
 
 ## 📥 Getting Started
-1. Click the **Download** button above.
-2. Run `FRCAcademyInstall.exe`.
-3. Choose your installation folder and follow the prompts.
-4. Open **FRC-Academy** from your desktop or Start menu.
+1. Download the Release
+2. Extract the Release
+3. Open FRC-Academy.exe
 
 ---
 
