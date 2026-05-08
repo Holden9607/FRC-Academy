@@ -1,6 +1,6 @@
 # FRC-Academy: FRC Coding Training
 
-[![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)]([PASTE_YOUR_GITHUB_RELEASE_LINK_HERE](https://github.com/Holden9607/FRC-Academy/releases/tag/FRC-Academy-Beta))
+[![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)]((https://github.com/Holden9607/FRC-Academy/releases/tag/FRC-Academy-Beta))
 
 The official training tool for learning motor logic and button mapping for REV and CTRE hardware.
 
