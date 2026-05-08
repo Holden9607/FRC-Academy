@@ -8,7 +8,6 @@
 <body>
     <div id="home-screen">
         <h1>FRC ACADEMY</h1>
-        
         <div class="card-container">
             <button class="card neo" onclick="launchApp('neo')">NEO (REV)</button>
             <button class="card kraken" onclick="launchApp('kraken')">KRAKEN (CTRE)</button>
@@ -22,14 +21,13 @@
             <button id="check-btn" class="deploy-btn">DEPLOY CODE</button>
         </div>
         <div class="workspace">
-            <textarea id="code-editor" spellcheck="false" placeholder="// Start typing your code here..."></textarea>
+            <textarea id="code-editor" spellcheck="false" placeholder="// Type your robot code here..."></textarea>
             <div class="sidebar">
                 <div class="xp-box">XP: <span id="xp-val">0</span></div>
                 <div id="instructions"></div>
             </div>
         </div>
     </div>
-
     <script src="renderer.js"></script>
 </body>
 </html>
