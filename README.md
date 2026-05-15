@@ -2,7 +2,7 @@
 
 [![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)](https://github.com/Holden9607/FRC-Academy/releases/latest)
 
-The official training tool for learning motor logic and button mapping for **REV (NEO)** and **CTRE (Kraken)** hardware.
+A Student made baisc FRC training tool for learning motor logic and button mapping for **REV (NEO)** and **CTRE (Kraken)** hardware.
 
 ---
 
@@ -17,7 +17,7 @@ The official training tool for learning motor logic and button mapping for **REV
 ## 🛠️ Training Features
 * **NEO (REV) Training:** Practice SparkMax motor control and basic button mapping.
 * **KRAKEN (CTRE) Training:** Learn the Phoenix 6 syntax and DutyCycleOut logic.
-* **Empty-Editor Logic:** Missions require manual code entry to build muscle memory for competition.
+* **Empty-Editor Logic:** Manual code entry to build muscle memory for competition.
 
 ---
 
