@@ -2,6 +2,10 @@
 
 [![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)](https://github.com/Holden9607/FRC-Academy/releases/latest)
 
+Made by Holden from FRC 9607 RJR CyberDemons
+
+---
+
 A Student made baisc FRC training tool for learning motor logic and button mapping for **REV (NEO)** and **CTRE (Kraken)** hardware.
 
 ---
