@@ -25,5 +25,5 @@ A Student made baisc FRC training tool for learning motor logic and button mappi
 Licensed under **CC BY-NC-SA 4.0**.
 
 * **Non-Commercial:** This tool is free for the FRC community and may not be sold.
-* **Attribution:** Please maintain the FRC Academy name and credits in all versions.
+* **Attribution:** Please maintain the FRC-Academy name and credits in all versions.
 * **Share-Alike:** If you modify the code or add new training lessons, you must share your version under the same license!
