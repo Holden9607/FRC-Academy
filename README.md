@@ -2,7 +2,7 @@
 
 [![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)](https://github.com/Holden9607/FRC-Academy/releases/latest)
 
-**Made by Holden from FRC 9607 RJR CyberDemons**
+**Made by Holden on FRC 9607 RJR CyberDemons**
 
 ---
 
