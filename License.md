@@ -1,6 +1,6 @@
 # LICENSE
 
-FRC Academy – Motor Programming Helper
+FRC Academy – Motor Programming Teaching Tool
 Copyright (c) 2026 Holden. All rights reserved.
 Project Affiliation: FRC Team 9607 (RJR CyberDemons)
 
