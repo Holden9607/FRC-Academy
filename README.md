@@ -16,7 +16,7 @@ A student-made, basic FRC training tool for learning motor logic and button mapp
 2. **Extract:** Right-click the downloaded file and select **"Extract All"**.
 3. **Run:** Open the extracted folder and double-click `FRC-Academy.exe` to begin training.
 
-> ⚠️ **Note on Antivirus:** Most antivirus software will likely scan the `.exe` upon opening since it is an unrecognized standalone app, but it is completely safe!
+> ⚠️ **Note on Antivirus:** Most antivirus software will likely scan the `.exe` upon opening but it is completely safe!
 
 ---
 
