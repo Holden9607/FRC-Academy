@@ -2,11 +2,11 @@
 
 [![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)](https://github.com/Holden9607/FRC-Academy/releases/latest)
 
-Made by Holden from FRC 9607 RJR CyberDemons
+**Made by Holden from FRC 9607 RJR CyberDemons**
 
 ---
 
-A Student made baisc FRC training tool for learning motor logic and button mapping for **REV (NEO)** and **CTRE (Kraken)** hardware.
+A student-made, basic FRC training tool for learning motor logic and button mapping for **REV (NEO)** and **CTRE (Kraken)** hardware.
 
 ---
 
@@ -15,6 +15,8 @@ A Student made baisc FRC training tool for learning motor logic and button mappi
 1. **Download:** Click the badge above to download the latest `.zip` release.
 2. **Extract:** Right-click the downloaded file and select **"Extract All"**.
 3. **Run:** Open the extracted folder and double-click `FRC-Academy.exe` to begin training.
+
+> ⚠️ **Note on Antivirus:** Most antivirus software will likely scan the `.exe` upon opening since it is an unrecognized standalone app, but it is completely safe!
 
 ---
 
