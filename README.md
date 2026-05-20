@@ -10,6 +10,15 @@ A student-made, basic FRC training tool for learning motor logic and button mapp
 
 ---
 
+[!IMPORTANT]
+> ### ☕ Required Setup Before Running
+> Because **FRC Academy** runs and compiles real robot code logic locally on your machine, you **must** have Java installed on your computer, or the application will not open!
+> 
+> * **If using FRC Academy v1.1.0 or Lower:** You must have at least **Java 8** installed.
+> * **If using FRC Academy v2.0.0 or Up:** You must have at least **Java 21** installed.
+
+---
+
 ## 📥 Getting Started
 
 1. **Download:** Click the badge above to download the latest `.zip` release.
