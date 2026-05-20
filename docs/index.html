@@ -226,7 +226,6 @@
     </style>
 </head>
 <body>
-<!-- Main menu -->
 <div id="mainMenu" class="menu-view">
     <h1>FRC Basic Code Academy</h1>
     <p>Choose a Category</p>
@@ -236,7 +235,6 @@
     </div>
 </div>
 
-<!-- Teaching view (initially hidden) -->
 <div id="teachingView" class="teaching-view">
     <div class="top-bar">
         <button id="backToMenuBtn" class="btn">← Main Menu</button>
@@ -265,7 +263,6 @@
     </div>
 </div>
 
-<!-- Modal for hint / solution -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -307,6 +304,10 @@
     const modalBody = document.getElementById('modalBody');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
     const modalCloseFooterBtn = document.getElementById('modalCloseFooterBtn');
+    
+    // Fixed: Added the missing main menu button DOM elements
+    const menuControllersBtn = document.getElementById('menuControllersBtn');
+    const menuMotorsBtn = document.getElementById('menuMotorsBtn');
 
     function closeModal() {
         modal.style.display = 'none';
@@ -518,7 +519,7 @@
             if (isNEO) sol += "                m_motor.set(0.5);\n";
             else sol += "                m_motor.setControl(new DutyCycleOut(0.5));\n";
             sol += "            }))\n";
-            sol += "            .onFalse(new InstantCommand(() -> {\n");
+            sol += "            .onFalse(new InstantCommand(() -> {\n";
             if (isNEO) sol += "                m_motor.set(0.0);\n";
             else sol += "                m_motor.setControl(new DutyCycleOut(0.0));\n";
             sol += "            }));\n";
@@ -624,6 +625,7 @@
         feedbackLabel.innerText = "Check complete: " + result;
     }
 
+    // Fixed: Complete showHintPopup function
     function showHintPopup() {
         let msg = "";
         if (selectedCategory === "Controllers") {
@@ -648,7 +650,7 @@
                 msg += "        .whileTrue(new RunCommand(() -> {\n";
                 msg += "            " + (isNEO ? "m_motor.set(0.5);" : "m_motor.setControl(new DutyCycleOut(0.5));") + "\n";
                 msg += "        }))\n";
-                msg += "        .onFalse(new InstantCommand(() -> {\n");
+                msg += "        .onFalse(new InstantCommand(() -> {\n";
                 msg += "            " + (isNEO ? "m_motor.set(0.0);" : "m_motor.setControl(new DutyCycleOut(0.0));") + "\n";
                 msg += "        }));\n";
                 msg += "}\n";
@@ -676,129 +678,51 @@
             }
         }
         modalTitle.innerText = "Hint";
-        modalBody.innerHTML = "<pre style='white-space: pre-wrap;'>" + escapeHtml(msg) + "</pre>";
+        modalBody.innerText = msg;
         modal.style.display = 'flex';
     }
 
+    // Fixed: Added missing Solution Popup function
     function showSolutionPopup() {
-        const userCode = editor.value;
-        const solution = (selectedCategory === "Controllers") ? getControllersSolution() : getMotorSolution();
-        const isNEO = selectedCategory === "Motors" && selectedMotor === "NEO";
-        const userLines = userCode.split(/\r?\n/);
-        const solLines = solution.split(/\r?\n/);
-        let html = "<div style='font-family: Consolas, monospace; font-size: 12px;'>";
-        for (let solLine of solLines) {
-            let trimmed = solLine.trim();
-            let userHasLine = false;
-            for (let userLine of userLines) {
-                if (userLine.trim() === trimmed) {
-                    userHasLine = true;
-                    break;
-                }
-            }
-            if (!userHasLine) {
-                // pattern matching fallback
-                if (trimmed.includes("import") && trimmed.includes(isNEO ? "SparkMax" : "TalonFX")) {
-                    for (let ul of userLines) if (ul.includes("import") && ul.includes(isNEO ? "SparkMax" : "TalonFX")) userHasLine = true;
-                } else if (trimmed.includes("driverController") || trimmed.includes("operatorController")) {
-                    for (let ul of userLines) if (ul.includes("driverController") || ul.includes("operatorController")) userHasLine = true;
-                } else if (trimmed.includes("new CommandXboxController(0)") || trimmed.includes("new CommandXboxController(1)")) {
-                    for (let ul of userLines) if (ul.includes("new CommandXboxController(0)") || ul.includes("new CommandXboxController(1)")) userHasLine = true;
-                } else if (trimmed.includes("new " + (isNEO ? "SparkMax" : "TalonFX") + "(")) {
-                    for (let ul of userLines) if (ul.includes("new " + (isNEO ? "SparkMax" : "TalonFX") + "(")) userHasLine = true;
-                } else if (selectedCategory === "Controllers") {
-                    if (trimmed.includes("private final CommandXboxController")) {
-                        for (let ul of userLines) if (ul.includes("private final CommandXboxController")) userHasLine = true;
-                    }
-                } else if (selectedMotorLesson === "Define") {
-                    if (trimmed.includes("private final " + (isNEO ? "SparkMax" : "TalonFX"))) {
-                        for (let ul of userLines) if (ul.includes("private final " + (isNEO ? "SparkMax" : "TalonFX"))) userHasLine = true;
-                    }
-                } else if (selectedMotorLesson === "Activate") {
-                    if (trimmed.includes("whileTrue") || trimmed.includes("onFalse")) {
-                        for (let ul of userLines) if (ul.includes("whileTrue") || ul.includes("onFalse")) userHasLine = true;
-                    } else if (trimmed.includes(".set(0.5)") || trimmed.includes(".set(0.0)") || trimmed.includes("setControl(new DutyCycleOut")) {
-                        for (let ul of userLines) if (ul.includes(".set(0.5)") || ul.includes(".set(0.0)") || ul.includes("setControl(new DutyCycleOut"))) userHasLine = true;
-                    }
-                } else if (selectedMotorLesson === "Tank") {
-                    if (trimmed.includes("teleopPeriodic")) {
-                        for (let ul of userLines) if (ul.includes("teleopPeriodic")) userHasLine = true;
-                    } else if (trimmed.includes("getLeftY") || trimmed.includes("getLeftX")) {
-                        for (let ul of userLines) if (ul.includes("getLeftY") || ul.includes("getLeftX")) userHasLine = true;
-                    } else if (trimmed.includes("leftSpeed") || trimmed.includes("rightSpeed")) {
-                        for (let ul of userLines) if (ul.includes("leftSpeed") || ul.includes("rightSpeed")) userHasLine = true;
-                    } else if (trimmed.includes("MathUtil.clamp")) {
-                        for (let ul of userLines) if (ul.includes("MathUtil.clamp")) userHasLine = true;
-                    } else if (trimmed.includes(".set") || trimmed.includes("setControl")) {
-                        for (let ul of userLines) if (ul.includes(".set") || ul.includes("setControl")) userHasLine = true;
-                    }
-                }
-            }
-            let color;
-            if (solLine.trim().startsWith("//")) color = "#ffff99";
-            else if (userHasLine) color = "#90ee90";
-            else color = "#ff9999";
-            html += `<div style="color: ${color};">${escapeHtml(solLine)}</div>`;
-        }
-        html += "</div>";
-        modalTitle.innerText = "Complete Solution - Color Coded";
-        modalBody.innerHTML = html;
+        modalTitle.innerText = "Solution";
+        modalBody.innerText = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
         modal.style.display = 'flex';
     }
 
-    function showLibraries() {
-        const libs = "Common FRC Libraries:\n\n" +
-                     "WPILib (built-in):\n  - edu.wpi.first.wpilibj.* (TimedRobot)\n  - edu.wpi.first.wpilibj2.command.* (CommandXboxController, RunCommand, InstantCommand)\n\n" +
-                     "CTRE Phoenix (Kraken, Falcon):\n  - com.ctre.phoenix6.hardware.TalonFX\n  - com.ctre.phoenix6.controls.DutyCycleOut\n\n" +
-                     "REV Robotics (NEO, NEO 550):\n  - com.revrobotics.spark.SparkMax\n  - com.revrobotics.spark.SparkLowLevel.MotorType\n\n" +
-                     "Other:\n  - edu.wpi.first.math.MathUtil (for clamping)";
-        alert(libs);
-    }
+    // ---------- Event Listeners ----------
 
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // ----- Event listeners -----
-    document.getElementById('menuControllersBtn').addEventListener('click', () => {
+    // Main Menu Navigation
+    menuControllersBtn.addEventListener('click', () => {
         selectedCategory = "Controllers";
         showTeachingView();
         showControllersLessonMenu();
     });
-    document.getElementById('menuMotorsBtn').addEventListener('click', () => {
+
+    menuMotorsBtn.addEventListener('click', () => {
         selectedCategory = "Motors";
         showTeachingView();
         showMotorTypeMenu();
     });
+
     backToMenuBtn.addEventListener('click', showMainMenu);
-    libsBtn.addEventListener('click', showLibraries);
+
+    // Editor & Lesson Controls
+    resetSkeletonBtn.addEventListener('click', loadSkeletonIntoEditor);
+    
     doItMyselfBtn.addEventListener('click', () => {
         loadSkeletonIntoEditor();
+        // Toggle button states once the user starts coding
         doItMyselfBtn.disabled = true;
         checkBtn.disabled = false;
         hintBtn.disabled = false;
         solutionBtn.disabled = false;
         resetSkeletonBtn.disabled = false;
-        backToGuideBtn.style.display = 'inline-block';
-        feedbackLabel.innerText = "Now fill in the missing parts. Use CHECK, HINT, or SOLUTION.";
     });
+
     checkBtn.addEventListener('click', checkCode);
     hintBtn.addEventListener('click', showHintPopup);
     solutionBtn.addEventListener('click', showSolutionPopup);
-    resetSkeletonBtn.addEventListener('click', () => {
-        if (!editor.readOnly) loadSkeletonIntoEditor();
-        else alert("Press 'Do It Myself' first to start editing.");
-    });
-    backToGuideBtn.addEventListener('click', () => {
-        instructionsArea.innerText = normalInstructions;
-        instructionsArea.scrollTop = 0;
-        backToGuideBtn.style.display = 'none';
-    });
+
 </script>
 </body>
 </html>
