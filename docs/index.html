@@ -90,7 +90,7 @@
             background: #0f111a;
             color: #f0f0f0;
             font-family: 'Consolas', monospace;
-            font-size: 13px;
+            font-size: 14px;
             padding: 12px;
             border: none;
             resize: none;
@@ -106,7 +106,7 @@
             padding: 16px;
             overflow-y: auto;
             background: #0f111a;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.5;
             white-space: pre-wrap;
         }
@@ -150,7 +150,7 @@
             transform: none;
             cursor: not-allowed;
         }
-        /* Updated Modal CSS for Code Review */
+        /* Modal CSS */
         .modal {
             display: none;
             position: fixed;
@@ -313,9 +313,8 @@
             <div id="instructionsArea" class="instructions-area"></div>
             <div class="button-group">
                 <button id="doItMyselfBtn" class="btn">Do It Myself</button>
-                <button id="hintBtn" class="btn" disabled>Hint</button>
                 <button id="checkBtn" class="btn" disabled>Check My Code</button>
-                <button id="solutionBtn" class="btn" disabled>Solution / Review</button>
+                <button id="solutionBtn" class="btn" disabled>Solution</button>
             </div>
             <div id="feedbackLabel" class="feedback">Select a lesson and press 'Do It Myself' to start coding.</div>
         </div>
@@ -325,14 +324,14 @@
 <div id="modal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <span class="title">CODE REVIEW</span>
+            <span class="title" id="modalMainTitle">CODE REVIEW</span>
             <span id="modalSubtitle" class="subtitle">Lesson Complete</span>
             <button class="close-btn" id="modalCloseBtn">×</button>
         </div>
         <div class="modal-split">
             <div id="modalCodeArea" class="modal-code-area">
                 </div>
-            <div class="modal-review-panel">
+            <div class="modal-review-panel" id="modalReviewPanel">
                 <div class="review-title">Review Panel</div>
                 <div class="color-key-label">Color Key:</div>
                 <div class="color-key-item">
@@ -347,7 +346,6 @@
                     <span class="color-icon hl-yellow">💬</span> 
                     <span>Comments</span>
                 </div>
-                <button class="btn" id="modalShowExactSolutionBtn" style="width: 100%; margin-bottom: 12px;">View Exact Solution</button>
             </div>
         </div>
     </div>
@@ -366,10 +364,10 @@
     const mainMenuDiv = document.getElementById('mainMenu');
     const teachingViewDiv = document.getElementById('teachingView');
     const backToMenuBtn = document.getElementById('backToMenuBtn');
+    const libsBtn = document.getElementById('libsBtn');
     const resetSkeletonBtn = document.getElementById('resetSkeletonBtn');
     const doItMyselfBtn = document.getElementById('doItMyselfBtn');
     const checkBtn = document.getElementById('checkBtn');
-    const hintBtn = document.getElementById('hintBtn');
     const solutionBtn = document.getElementById('solutionBtn');
     const categoryTitle = document.getElementById('categoryTitle');
     const instructionsArea = document.getElementById('instructionsArea');
@@ -377,10 +375,11 @@
     
     // Modal elements
     const modal = document.getElementById('modal');
+    const modalMainTitle = document.getElementById('modalMainTitle');
     const modalSubtitle = document.getElementById('modalSubtitle');
     const modalCodeArea = document.getElementById('modalCodeArea');
+    const modalReviewPanel = document.getElementById('modalReviewPanel');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
-    const modalShowExactSolutionBtn = document.getElementById('modalShowExactSolutionBtn');
     
     const menuControllersBtn = document.getElementById('menuControllersBtn');
     const menuMotorsBtn = document.getElementById('menuMotorsBtn');
@@ -402,7 +401,6 @@
         instructionsArea.innerHTML = "";
         doItMyselfBtn.disabled = true;
         checkBtn.disabled = true;
-        hintBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
         feedbackLabel.innerText = "Choose a lesson from the menu above.";
@@ -417,7 +415,7 @@
         if (editor) editor.readOnly = true;
     }
 
-    // ---------- Sub‑menus (No Back Buttons) ----------
+    // ---------- Sub‑menus ----------
     function showControllersLessonMenu() {
         instructionsArea.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
@@ -466,16 +464,12 @@
     // ---------- Start lessons ----------
     function startControllersLesson() {
         categoryTitle.innerText = "Controllers | Define Xbox Controllers";
-        const solution = getControllersSolution();
-        editor.value = solution;
+        editor.value = getControllersSolution();
         editor.readOnly = true;
         editorEditable = false;
-        normalInstructions = "Task: Add two CommandXboxController variables to the Robot class.\n\nName them:\n  - driverController (port 0)\n  - operatorController (port 1)\n\nPress 'Do It Myself', then write the declarations.";
-        instructionsArea.innerText = normalInstructions;
-        instructionsArea.scrollTop = 0;
+        instructionsArea.innerText = "Task: Add two CommandXboxController variables to the Robot class.\n\nName them:\n  - driverController (port 0)\n  - operatorController (port 1)\n\nPress 'Do It Myself', then write the declarations.";
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
-        hintBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
         feedbackLabel.innerText = "Press 'Do It Myself' to start coding.";
@@ -486,8 +480,8 @@
         if (selectedMotorLesson === "Define") lessonName = "Define a Motor";
         else if (selectedMotorLesson === "Activate") lessonName = "Activate Single Motor";
         else lessonName = "Tank Drive (Arcade)";
-        categoryTitle.innerText = `${selectedMotor} | ${lessonName}`;
         
+        categoryTitle.innerText = `${selectedMotor} | ${lessonName}`;
         editor.value = getMotorSolution();
         editor.readOnly = true;
         editorEditable = false;
@@ -503,7 +497,6 @@
         instructionsArea.innerText = sb;
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
-        hintBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
         feedbackLabel.innerText = "Press 'Do It Myself' to start coding.";
@@ -511,7 +504,7 @@
 
     // ----- Code Generators -----
     function getControllersSolution() {
-        return "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n\npublic class Robot extends TimedRobot {\n    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n    @Override\n    public void robotInit() { }\n}\n";
+        return "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n\npublic class Robot extends TimedRobot {\n    // Controller Declarations\n    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n    @Override\n    public void robotInit() { }\n}\n";
     }
 
     function getMotorSolution() {
@@ -532,9 +525,9 @@
         
         sol += "\npublic class Robot extends TimedRobot {\n";
         if (selectedMotorLesson === "Define" || selectedMotorLesson === "Activate") {
-            sol += `    private final ${motorClass} m_motor = new ${motorClass}${motorParams1};\n`;
+            sol += `    // Motor Declaration\n    private final ${motorClass} m_motor = new ${motorClass}${motorParams1};\n`;
         } else {
-            sol += `    private final ${motorClass} m_leftMotor = new ${motorClass}${motorParams1};\n`;
+            sol += `    // Motor Declarations\n    private final ${motorClass} m_leftMotor = new ${motorClass}${motorParams1};\n`;
             sol += `    private final ${motorClass} m_rightMotor = new ${motorClass}${motorParams2};\n`;
         }
         sol += "    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n";
@@ -542,13 +535,13 @@
         if (selectedMotorLesson === "Define") {
             sol += "    @Override\n    public void robotInit() { }\n";
         } else if (selectedMotorLesson === "Activate") {
-            sol += "    @Override\n    public void robotInit() {\n        operatorController.b()\n            .whileTrue(new RunCommand(() -> {\n";
+            sol += "    @Override\n    public void robotInit() {\n        // Bind button B\n        operatorController.b()\n            .whileTrue(new RunCommand(() -> {\n";
             sol += isNEO ? "                m_motor.set(0.5);\n" : "                m_motor.setControl(new DutyCycleOut(0.5));\n";
             sol += "            }))\n            .onFalse(new InstantCommand(() -> {\n";
             sol += isNEO ? "                m_motor.set(0.0);\n" : "                m_motor.setControl(new DutyCycleOut(0.0));\n";
             sol += "            }));\n    }\n";
         } else {
-            sol += "    @Override\n    public void teleopPeriodic() {\n        double forward = -driverController.getLeftY();\n        double turn = driverController.getLeftX();\n        double leftSpeed = forward + turn;\n        double rightSpeed = forward - turn;\n        leftSpeed = MathUtil.clamp(leftSpeed, -1.0, 1.0);\n        rightSpeed = MathUtil.clamp(rightSpeed, -1.0, 1.0);\n";
+            sol += "    @Override\n    public void teleopPeriodic() {\n        // Arcade Drive Math\n        double forward = -driverController.getLeftY();\n        double turn = driverController.getLeftX();\n        double leftSpeed = forward + turn;\n        double rightSpeed = forward - turn;\n        leftSpeed = MathUtil.clamp(leftSpeed, -1.0, 1.0);\n        rightSpeed = MathUtil.clamp(rightSpeed, -1.0, 1.0);\n";
             if (isNEO) {
                 sol += "        m_leftMotor.set(leftSpeed);\n        m_rightMotor.set(rightSpeed);\n";
             } else {
@@ -588,46 +581,39 @@
         feedbackLabel.innerText = "Skeleton loaded. Fill in the missing parts.";
     }
 
-    // ---------- Code Evaluation & Highlighting ----------
+    // ---------- Modals (Review, Solution, Libraries) ----------
+    
     function showCodeReview() {
         const studentCode = editor.value;
         let expectedTerms = [];
         let wrongTerms = [];
-        let lessonSubtitle = "";
+        let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
 
-        // Determine what phrases to look for based on the active lesson
         if (selectedCategory === "Controllers") {
-            lessonSubtitle = "Lesson Complete: Controllers";
             expectedTerms = ["new CommandXboxController(0)", "new CommandXboxController(1)"];
             wrongTerms = ["Joystick"];
         } else {
             const isNEO = selectedMotor === "NEO";
-            lessonSubtitle = `Lesson Complete: ${selectedMotor} | ${selectedMotorLesson}`;
             
             if (isNEO) {
-                expectedTerms = ["SparkMax", "kBrushless", "CANSparkMax"]; // CANSparkMax included just in case
+                expectedTerms = ["SparkMax", "kBrushless", "CANSparkMax"];
                 wrongTerms = ["TalonFX", "DutyCycleOut"];
             } else {
                 expectedTerms = ["TalonFX", "DutyCycleOut"];
                 wrongTerms = ["SparkMax", "kBrushless", "CANSparkMax"];
             }
 
-            if (selectedMotorLesson === "Activate") {
-                expectedTerms.push("operatorController.b()", "whileTrue", "onFalse", "set(");
-            } else if (selectedMotorLesson === "Tank") {
-                expectedTerms.push("getLeftY", "getLeftX", "MathUtil.clamp", "set(");
-            }
+            if (selectedMotorLesson === "Activate") expectedTerms.push("operatorController.b()", "whileTrue", "onFalse", "set(");
+            else if (selectedMotorLesson === "Tank") expectedTerms.push("getLeftY", "getLeftX", "MathUtil.clamp", "set(");
         }
 
-        // Apply highlighting line by line
         const lines = studentCode.split('\n');
         let highlightedHTML = "";
 
         lines.forEach(line => {
-            // Escape HTML characters
             let formattedLine = line.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            
             let commentIndex = formattedLine.indexOf("//");
+            
             if (commentIndex !== -1) {
                 let codePart = formattedLine.substring(0, commentIndex);
                 let commentPart = formattedLine.substring(commentIndex);
@@ -646,18 +632,65 @@
                 
                 if (isWrong) highlightedHTML += `<span class="hl-red">${formattedLine}</span><br>`;
                 else if (isCorrect) highlightedHTML += `<span class="hl-green">${formattedLine}</span><br>`;
-                else highlightedHTML += `${formattedLine}<br>`; // Unstyled text
+                else highlightedHTML += `${formattedLine}<br>`;
             }
         });
 
-        // Populate and show the modal
-        modalSubtitle.innerText = lessonSubtitle;
+        modalMainTitle.innerText = "CODE REVIEW";
+        modalSubtitle.innerText = `Lesson Review : ${lessonInfo}`;
+        modalReviewPanel.style.display = 'flex'; // Show color key panel
         modalCodeArea.innerHTML = highlightedHTML;
         modal.style.display = 'flex';
     }
 
     function showExactSolution() {
-        modalCodeArea.innerHTML = `<span style="color:#fff;">${selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution()}</span>`;
+        let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
+        let rawCode = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
+        
+        // Highlight comments in yellow for the solution output
+        let highlightedCode = rawCode.split('\n').map(line => {
+            let formattedLine = line.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            let commentIndex = formattedLine.indexOf("//");
+            if (commentIndex !== -1) {
+                let codePart = formattedLine.substring(0, commentIndex);
+                let commentPart = formattedLine.substring(commentIndex);
+                return `${codePart}<span class="hl-yellow">${commentPart}</span>`;
+            }
+            return formattedLine;
+        }).join('<br>');
+
+        modalMainTitle.innerText = "CODE SOLUTION";
+        modalSubtitle.innerText = `Lesson Solution : ${lessonInfo}`;
+        modalReviewPanel.style.display = 'none'; // Hide review panel for pure solution
+        modalCodeArea.innerHTML = `<span style="color:#fff;">${highlightedCode}</span>`;
+        modal.style.display = 'flex';
+    }
+
+    function showLibraries() {
+        modalMainTitle.innerText = "REFERENCE";
+        modalSubtitle.innerText = "Common FRC Libraries";
+        modalReviewPanel.style.display = 'none'; // Hide review panel
+        
+        modalCodeArea.innerHTML = `
+<span style="color: #ffc857; font-weight: bold; font-size: 16px;">WPILib (built-in):</span>
+  - edu.wpi.first.wpilibj.* <span style="color:#aaa;">(TimedRobot, Joystick, RobotController, DriverStation)</span>
+  - edu.wpi.first.wpilibj2.command.* <span style="color:#aaa;">(CommandXboxController, RunCommand, InstantCommand, JoystickButton)</span>
+  - edu.wpi.first.math.* <span style="color:#aaa;">(MathUtil, Rotation2d, Translation2d, PIDController)</span>
+
+<br><br><span style="color: #ffc857; font-weight: bold; font-size: 16px;">CTRE Phoenix (Kraken, Falcon):</span>
+  - com.ctre.phoenix6.hardware.TalonFX
+  - com.ctre.phoenix6.controls.DutyCycleOut
+  - com.ctre.phoenix6.controls.PositionVoltage, VelocityVoltage, etc.
+
+<br><br><span style="color: #ffc857; font-weight: bold; font-size: 16px;">REV Robotics (NEO, NEO 550):</span>
+  - com.revrobotics.spark.SparkMax
+  - com.revrobotics.spark.SparkLowLevel.MotorType
+  - com.revrobotics.spark.SparkBase
+
+<br><br><span style="color: #ffc857; font-weight: bold; font-size: 16px;">Other useful:</span>
+  - edu.wpi.first.networktables.NetworkTable
+        `;
+        modal.style.display = 'flex';
     }
 
     // ---------- Event Listeners ----------
@@ -671,17 +704,13 @@
         loadSkeletonIntoEditor();
         doItMyselfBtn.disabled = true;
         checkBtn.disabled = false;
-        hintBtn.disabled = false;
         solutionBtn.disabled = false;
         resetSkeletonBtn.disabled = false;
     });
 
-    // Both Check and Solution buttons now trigger the Code Review panel
+    libsBtn.addEventListener('click', showLibraries);
     checkBtn.addEventListener('click', showCodeReview);
-    solutionBtn.addEventListener('click', showCodeReview);
-    
-    // Inside the modal, they can click "View Exact Solution" to override their code with the raw answer
-    modalShowExactSolutionBtn.addEventListener('click', showExactSolution);
+    solutionBtn.addEventListener('click', showExactSolution);
 
 </script>
 </body>
