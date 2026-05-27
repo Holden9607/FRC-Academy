@@ -357,7 +357,11 @@
         <div class="modal-split">
             <div class="modal-left-col">
                 <div id="modalCodeArea" class="modal-code-area"></div>
-                <div id="successBox" class="success-box"></div>
+                
+                <div id="successBox" class="success-box">
+                    <span style="color: #4ade80; font-weight: bold; font-size: 18px;">✅ Code is Correct!</span><br>
+                    <button id="modalMainMenuBtn" class="btn" style="margin-top: 15px;">Main Menu</button>
+                </div>
             </div>
 
             <div id="modalReviewPanel" class="modal-review-panel">
@@ -395,6 +399,7 @@
     const menuControllersBtn = document.getElementById('menuControllersBtn');
     const menuMotorsBtn = document.getElementById('menuMotorsBtn');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalMainMenuBtn = document.getElementById('modalMainMenuBtn');
     
     // UI Elements
     const categoryTitle = document.getElementById('categoryTitle');
@@ -540,6 +545,7 @@
     }
 
     function getMotorSolution() {
+        // --- 6 Motor Tank Drive Specific Logic ---
         if (selectedMotorLesson === "Tank6") {
             if (selectedMotor === "NEO") {
                 return `import edu.wpi.first.wpilibj.TimedRobot;
@@ -660,6 +666,7 @@ public class Robot extends TimedRobot {
             }
         }
 
+        // --- Standard (Define/Activate/2-Motor Tank) Logic ---
         const isNEO = selectedMotor === "NEO";
         const motorClass = isNEO ? "SparkMax" : "TalonFX";
         const motorImport = isNEO ? "import com.revrobotics.spark.SparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;";
@@ -735,81 +742,26 @@ public class Robot extends TimedRobot {
         
         editor.readOnly = false;
         editorEditable = true;
+        
+        // Enable interaction buttons
         checkBtn.disabled = false;
         solutionBtn.disabled = false;
         resetSkeletonBtn.disabled = false;
+        
         feedbackLabel.innerText = "Skeleton loaded. Fill in the missing parts.";
-    }
-
-    // ---------- Reusable Success Box Logic ----------
-    function triggerSuccessBox(isPerfect) {
-        if (isPerfect) {
-            successBox.classList.add('active');
-            let buttonsHtml = `<button id="modalMainMenuBtn" class="btn" style="margin-top: 15px;">Main Menu</button>`;
-            
-            // If the user is in a motors lesson, offer them the ability to return to the motor selection
-            if (selectedCategory === "Motors") {
-                buttonsHtml += `<button id="modalMotorMenuBtn" class="btn" style="margin-top: 15px; margin-left: 10px;">Motor Selection</button>`;
-            }
-            
-            successBox.innerHTML = `
-                <span style="color: #4ade80; font-weight: bold; font-size: 18px;">✅ Code is Correct!</span><br>
-                <div style="display: flex; justify-content: center; flex-wrap: wrap;">
-                    ${buttonsHtml}
-                </div>
-            `;
-            
-            // Attach event listeners dynamically to the new buttons
-            document.getElementById('modalMainMenuBtn').addEventListener('click', () => {
-                closeModal();
-                showMainMenu();
-            });
-            
-            if (selectedCategory === "Motors") {
-                document.getElementById('modalMotorMenuBtn').addEventListener('click', () => {
-                    closeModal();
-                    // Reset the editor state
-                    editor.value = "// Select a lesson from the menu above to begin.";
-                    editor.readOnly = true;
-                    editorEditable = false;
-                    doItMyselfBtn.disabled = true;
-                    checkBtn.disabled = true;
-                    solutionBtn.disabled = true;
-                    resetSkeletonBtn.disabled = true;
-                    feedbackLabel.innerText = "Choose a lesson from the menu above.";
-                    // Route user to Motor Selection View
-                    showMotorTypeMenu();
-                });
-            }
-        } else {
-            successBox.classList.remove('active');
-        }
     }
 
     // ---------- Check My Code ----------
     function showCodeReview() {
+        successBox.classList.remove('active'); // Hide success box if open
         const userCode = editor.value;
         const solution = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
         const solutionLines = solution.split(/\r?\n/).map(l => l.trim());
-        const userLinesRaw = userCode.split(/\r?\n/);
-        const userLinesTrimmed = userLinesRaw.map(l => l.trim());
+        const userLines = userCode.split(/\r?\n/);
         let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
 
-        // Verify if 100% correct
-        let perfect = true;
-        if (userLinesTrimmed.length !== solutionLines.length) {
-            perfect = false;
-        } else {
-            for (let i = 0; i < userLinesTrimmed.length; i++) {
-                if (userLinesTrimmed[i] !== solutionLines[i]) {
-                    perfect = false;
-                    break;
-                }
-            }
-        }
-
         let highlightedHTML = "";
-        for (let userLine of userLinesRaw) {
+        for (let userLine of userLines) {
             let trimmed = userLine.trim();
             let isCorrect = solutionLines.includes(trimmed);
             let formattedLine = userLine.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -829,9 +781,6 @@ public class Robot extends TimedRobot {
         modalSubtitle.innerText = `Lesson Review : ${lessonInfo}`;
         modalReviewPanel.style.display = 'flex';
         modalCodeArea.innerHTML = highlightedHTML;
-        
-        triggerSuccessBox(perfect);
-        
         modal.style.display = 'flex';
     }
 
@@ -839,19 +788,17 @@ public class Robot extends TimedRobot {
     function showExactSolution() {
         const userCode = editor.value;
         const solution = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
-        const userLinesRaw = userCode.split(/\r?\n/);
-        const userLinesTrimmed = userLinesRaw.map(l => l.trim());
-        const solLinesRaw = solution.split(/\r?\n/);
-        const solLinesTrimmed = solLinesRaw.map(l => l.trim());
+        const userLines = userCode.split(/\r?\n/).map(l => l.trim());
+        const solLines = solution.split(/\r?\n/);
         let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
 
-        // Verify if 100% correct
+        // Check if user's code is perfect
         let perfect = true;
-        if (userLinesTrimmed.length !== solLinesTrimmed.length) {
+        if (userLines.length !== solLines.length) {
             perfect = false;
         } else {
-            for (let i = 0; i < userLinesTrimmed.length; i++) {
-                if (userLinesTrimmed[i] !== solLinesTrimmed[i]) {
+            for (let i = 0; i < userLines.length; i++) {
+                if (userLines[i] !== solLines[i].trim()) {
                     perfect = false;
                     break;
                 }
@@ -859,10 +806,10 @@ public class Robot extends TimedRobot {
         }
 
         let highlightedHTML = "";
-        for (let i = 0; i < solLinesRaw.length; i++) {
-            let solLine = solLinesRaw[i];
+        for (let i = 0; i < solLines.length; i++) {
+            let solLine = solLines[i];
             let trimmedSol = solLine.trim();
-            let userHasLine = userLinesTrimmed.includes(trimmedSol);
+            let userHasLine = userLines.includes(trimmedSol);
             let formattedLine = solLine.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             let commentIndex = formattedLine.indexOf("//");
             if (commentIndex !== -1) {
@@ -880,6 +827,7 @@ public class Robot extends TimedRobot {
         modalSubtitle.innerText = `Lesson Solution : ${lessonInfo}`;
         modalReviewPanel.style.display = 'none';
         
+        // Append small hint text if not perfect
         let hintHTML = "";
         if (!perfect) {
             hintHTML = `<div style="text-align: center; margin-top: 20px;">
@@ -889,13 +837,18 @@ public class Robot extends TimedRobot {
 
         modalCodeArea.innerHTML = highlightedHTML + hintHTML;
 
-        triggerSuccessBox(perfect);
+        // Toggle separate success box state
+        if (perfect) {
+            successBox.classList.add('active');
+        } else {
+            successBox.classList.remove('active');
+        }
 
         modal.style.display = 'flex';
     }
 
     function showLibraries() {
-        successBox.classList.remove('active');
+        successBox.classList.remove('active'); // Ensure box is hidden
         modalMainTitle.innerText = "REFERENCE";
         modalSubtitle.innerText = "Common FRC Libraries";
         modalReviewPanel.style.display = 'none';
@@ -926,10 +879,12 @@ public class Robot extends TimedRobot {
         successBox.classList.remove('active');
     }
 
-    // ---------- Event Listeners ----------
+    // ---------- Event Listeners Attached Directly ----------
+    // Top-bar navigation
     mainMenuBtn.addEventListener('click', showMainMenu);
     libsBtn.addEventListener('click', showLibraries);
 
+    // Main Menu category selection
     menuControllersBtn.addEventListener('click', () => {
         selectedCategory = "Controllers";
         showTeachingView();
@@ -944,11 +899,18 @@ public class Robot extends TimedRobot {
         showMotorTypeMenu();
     });
 
+    // Editor & Instructions action buttons
     resetSkeletonBtn.addEventListener('click', loadSkeletonIntoEditor);
     doItMyselfBtn.addEventListener('click', loadSkeletonIntoEditor);
     checkBtn.addEventListener('click', showCodeReview);
     solutionBtn.addEventListener('click', showExactSolution);
+
+    // Modal navigation
     modalCloseBtn.addEventListener('click', closeModal);
+    modalMainMenuBtn.addEventListener('click', () => {
+        closeModal();
+        showMainMenu();
+    });
 
 </script>
 </body>
