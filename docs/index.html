@@ -663,7 +663,9 @@
     let selectedCategory = null;      
     let selectedMotor = null;         
     let selectedMotorLesson = null;
+    let normalInstructions = "";
     let editor = document.getElementById('codeEditor');
+    let editorEditable = false;
     let historyStack = [];
 
     const mainMenuDiv = document.getElementById('mainMenu');
@@ -696,6 +698,7 @@
         teachingViewDiv.style.display = 'flex';
         editor.value = "// Select a lesson from the side menu to begin.";
         editor.readOnly = true;
+        editorEditable = false;
         categoryTitle.innerText = "Learning Guide";
         instructionsArea.innerHTML = "";
         doItMyselfBtn.disabled = true;
@@ -772,6 +775,7 @@
         categoryTitle.innerText = "Controllers | Define Xbox Controllers";
         editor.value = getControllersSolution();
         editor.readOnly = true;
+        editorEditable = false;
         instructionsArea.innerHTML = "<h3 style='color: var(--text-primary); margin-bottom: 12px;'>Task Requirements:</h3><p>Add two CommandXboxController variables to the Robot class.</p><br><p><strong>Name them:</strong></p><ul style='margin-left: 20px; margin-top: 8px;'><li>driverController (port 0)</li><li>operatorController (port 1)</li></ul><br><p style='color: var(--accent-primary); font-weight: 500;'>Press 'Start Coding', then write the declarations.</p>";
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
@@ -791,6 +795,7 @@
         categoryTitle.innerText = `${selectedMotor} | ${lessonName}`;
         editor.value = getMotorSolution();
         editor.readOnly = true;
+        editorEditable = false;
         
         const isNEO = selectedMotor === "NEO";
         const motorClass = isNEO ? "SparkMax" : "TalonFX";
@@ -992,6 +997,7 @@ public class Robot extends TimedRobot {
         }
         
         editor.readOnly = false;
+        editorEditable = true;
         editor.focus();
         
         checkBtn.disabled = false;
@@ -1034,6 +1040,7 @@ public class Robot extends TimedRobot {
                     // Reset Editor UI before switching screen
                     editor.value = "// Select a lesson from the side menu to begin.";
                     editor.readOnly = true;
+                    editorEditable = false;
                     doItMyselfBtn.disabled = true;
                     checkBtn.disabled = true;
                     solutionBtn.disabled = true;
@@ -1056,18 +1063,24 @@ public class Robot extends TimedRobot {
         const userLines = userCode.split(/\r?\n/);
         let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
 
-        // Robust Perfection Check: trims the full block to ignore trailing whitespace
-        const userCodeClean = userCode.trim();
-        const solCodeClean = solution.trim();
-        const userLinesTrimmed = userCodeClean.split(/\r?\n/).map(l => l.trim());
-        const solLinesTrimmed = solCodeClean.split(/\r?\n/).map(l => l.trim());
-        
-        let perfect = userLinesTrimmed.length === solLinesTrimmed.length && userLinesTrimmed.every((l, idx) => l === solLinesTrimmed[idx]);
+        // Perfection check
+        let perfect = true;
+        const userLinesTrimmed = userLines.map(l => l.trim());
+        if (userLinesTrimmed.length !== solutionLines.length) {
+            perfect = false;
+        } else {
+            for (let i = 0; i < userLinesTrimmed.length; i++) {
+                if (userLinesTrimmed[i] !== solutionLines[i]) {
+                    perfect = false;
+                    break;
+                }
+            }
+        }
 
         let highlightedHTML = "";
         for (let userLine of userLines) {
             let trimmed = userLine.trim();
-            let isCorrect = solutionLines.includes(trimmed) && trimmed !== "";
+            let isCorrect = solutionLines.includes(trimmed);
             let formattedLine = userLine.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             let commentIndex = formattedLine.indexOf("//");
             if (commentIndex !== -1) {
@@ -1099,19 +1112,23 @@ public class Robot extends TimedRobot {
         const solLines = solution.split(/\r?\n/);
         let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
         
-        // Robust Perfection Check
-        const userCodeClean = userCode.trim();
-        const solCodeClean = solution.trim();
-        const userLinesTrimmed = userCodeClean.split(/\r?\n/).map(l => l.trim());
-        const solLinesTrimmed = solCodeClean.split(/\r?\n/).map(l => l.trim());
-        
-        let perfect = userLinesTrimmed.length === solLinesTrimmed.length && userLinesTrimmed.every((l, idx) => l === solLinesTrimmed[idx]);
+        let perfect = true;
+        if (userLines.length !== solLines.length) {
+            perfect = false;
+        } else {
+            for (let i = 0; i < userLines.length; i++) {
+                if (userLines[i] !== solLines[i].trim()) {
+                    perfect = false;
+                    break;
+                }
+            }
+        }
 
         let highlightedHTML = "";
         for (let i = 0; i < solLines.length; i++) {
             let solLine = solLines[i];
             let trimmedSol = solLine.trim();
-            let userHasLine = userLines.includes(trimmedSol) && trimmedSol !== "";
+            let userHasLine = userLines.includes(trimmedSol);
             let formattedLine = solLine.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             let commentIndex = formattedLine.indexOf("//");
             if (commentIndex !== -1) {
