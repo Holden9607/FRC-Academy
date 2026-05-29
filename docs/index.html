@@ -5,19 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FRC Basic Code Academy</title>
     <style>
+        /* --- CSS Variables for Modern Theming --- */
+        :root {
+            --bg-main: #09090b;
+            --bg-panel: #18181b;
+            --bg-editor: #000000;
+            --border-color: #27272a;
+            --border-hover: #3f3f46;
+            --accent-primary: #3b82f6;
+            --accent-primary-hover: #2563eb;
+            --accent-secondary: #eab308;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-code: #e4e4e7;
+            --success: #22c55e;
+            --error: #ef4444;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+            --shadow-panel: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+            --transition-fast: 0.15s ease-in-out;
+            --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* --- Reset & Base --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #1a1d2e;
-            color: #e0e0e0;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
             height: 100vh;
             overflow: hidden;
             position: relative;
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
         }
+
+        /* --- Scrollbars --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #52525b;
+        }
+
+        h1, h2, h3 {
+            letter-spacing: -0.02em;
+        }
+
+        .btn {
+            background: var(--bg-panel);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #27272a;
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #checkBtn, #doItMyselfBtn, #startControllerBtn, #neoBtn, #krakenBtn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        #checkBtn:hover:not(:disabled), #doItMyselfBtn:hover:not(:disabled), 
+        #startControllerBtn:hover, #neoBtn:hover, #krakenBtn:hover {
+            background: var(--accent-primary-hover);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* --- Main Menu View --- */
         .menu-view {
             display: flex;
             flex-direction: column;
@@ -25,324 +119,516 @@
             justify-content: center;
             height: 100%;
             width: 100%;
-            background: #1a1d2e;
             text-align: center;
+            animation: fadeIn 0.5s ease-out;
         }
+
         .menu-view h1 {
-            font-size: 56px;
-            font-weight: 700;
-            color: #ffc857;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 64px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
+
         .menu-view p {
-            font-size: 24px;
-            margin-bottom: 40px;
-            color: #c0c0d0;
+            font-size: 20px;
+            margin-bottom: 48px;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
+
         .menu-buttons {
             display: flex;
-            gap: 40px;
+            gap: 24px;
         }
+
+        .menu-buttons .btn {
+            font-size: 16px;
+            padding: 16px 40px;
+            border-radius: var(--radius-md);
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+        }
+
+        .menu-buttons .btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .footer-credits {
+            position: absolute;
+            bottom: 24px;
+            width: 100%;
+            text-align: center;
+            color: #52525b;
+            font-size: 13px;
+            pointer-events: none;
+            letter-spacing: 0.05em;
+        }
+
+        /* --- Teaching View (Editor & Instructions) --- */
         .teaching-view {
             display: none;
             flex-direction: column;
             height: 100%;
             width: 100%;
+            animation: fadeIn 0.3s ease-out;
         }
+
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 24px;
-            background: #1a1d2e;
-            border-bottom: 1px solid #2a2e42;
+            padding: 16px 24px;
+            background: rgba(24, 24, 27, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
         }
+
         .main-split {
             display: flex;
             flex: 1;
-            gap: 16px;
-            padding: 16px;
+            gap: 20px;
+            padding: 20px;
             overflow: hidden;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
         }
+
         .editor-panel, .instructions-panel {
-            background: #202433;
-            border-radius: 12px;
-            border: 1px solid #2a2e42;
+            background: var(--bg-panel);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-panel);
         }
-        .editor-panel { flex: 7; }
-        .instructions-panel { flex: 3; }
+
+        .editor-panel { flex: 6.5; }
+        .instructions-panel { flex: 3.5; }
+
         .panel-header {
-            padding: 12px 16px;
-            background: #202433;
-            border-bottom: 1px solid #2a2e42;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border-color);
             font-weight: 600;
-            color: #ffc857;
-            font-size: 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        .panel-header::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-secondary);
+        }
+
         textarea {
             flex: 1;
-            background: #0f111a;
-            color: #f0f0f0;
-            font-family: 'Consolas', monospace;
-            font-size: 14px;
-            padding: 12px;
+            background: var(--bg-editor);
+            color: var(--text-code);
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 15px;
+            line-height: 1.6;
+            padding: 20px;
             border: none;
             resize: none;
             outline: none;
+            transition: background 0.3s;
         }
+        
+        textarea:focus {
+            background: #050505;
+        }
+
         .editor-actions {
-            padding: 12px;
+            padding: 12px 20px;
             text-align: right;
-            border-top: 1px solid #2a2e42;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border-color);
         }
+
         .instructions-area {
             flex: 1;
-            padding: 16px;
+            padding: 24px;
             overflow-y: auto;
-            background: #0f111a;
-            font-size: 14px;
-            line-height: 1.5;
+            background: var(--bg-panel);
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
             white-space: pre-wrap;
         }
+
+        .instructions-area h2 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
         .button-group {
-            padding: 12px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            border-top: 1px solid #2a2e42;
+            gap: 12px;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--border-color);
         }
+
+        .button-group .btn {
+            padding: 14px;
+            font-size: 15px;
+        }
+
         .feedback {
-            padding: 8px 16px;
-            font-style: italic;
-            color: #aaa;
-            background: #1a1d2e;
-            border-top: 1px solid #2a2e42;
-            font-size: 12px;
+            padding: 12px 20px;
+            color: var(--accent-secondary);
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
         }
-        .btn {
-            background: #2c3e66;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 10px 28px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .btn:hover:not(:disabled) {
-            background: #3e5a8a;
-            transform: scale(1.05);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
-        }
-        .btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            transform: none;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+
+        /* --- Modal (Review & Solution) --- */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            animation: fadeIn 0.2s ease-out;
         }
+
         .modal-content {
-            background: #151828;
-            border: 1px solid #3a3e5a;
-            border-radius: 12px;
-            width: 900px;
-            max-width: 95%;
-            max-height: 85%;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 1000px;
+            max-width: 95vw;
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             overflow: hidden;
+            animation: slideUp 0.3s var(--transition-bounce);
         }
+
         .modal-header {
-            padding: 20px 24px;
-            background: #1a1d2e;
-            border-bottom: 2px solid #2a2e42;
+            padding: 24px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
             position: relative;
         }
+
         .modal-header .title {
-            color: #ffc857;
-            font-weight: 800;
-            font-size: 22px;
-            letter-spacing: 1px;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 20px;
         }
+
         .modal-header .subtitle {
-            color: #ffffff;
-            font-size: 16px;
-            margin-top: 4px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 6px;
         }
+
         .close-btn {
             position: absolute;
-            top: 20px;
+            top: 24px;
             right: 24px;
             background: none;
             border: none;
-            color: #fff;
-            font-size: 28px;
+            color: var(--text-secondary);
+            font-size: 24px;
             cursor: pointer;
             line-height: 1;
-            transition: transform 0.1s;
+            transition: color 0.2s;
         }
+
         .close-btn:hover {
-            transform: scale(1.2);
-            color: #ffc857;
+            color: var(--error);
         }
+
         .modal-split {
             display: flex;
             flex-direction: row;
             flex: 1;
             overflow: hidden;
         }
+
         .modal-left-col {
             flex: 7;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            background: var(--bg-editor);
         }
+
         .modal-code-area {
             flex: 1;
-            background: #0f111a;
-            padding: 20px;
-            margin: 16px;
-            border-radius: 8px;
-            border: 1px solid #3e5a8a;
-            font-family: 'Consolas', monospace;
+            padding: 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.7;
             overflow-y: auto;
             white-space: pre-wrap;
+            color: var(--text-code);
         }
-        .success-box {
-            display: none;
-            margin: 0 16px 16px 16px;
-            padding: 20px;
-            background: #10151c;
-            border: 2px solid #4ade80;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .success-box.active {
-            display: block;
-        }
+
         .modal-review-panel {
             flex: 3;
             padding: 24px;
             display: flex;
             flex-direction: column;
-            border-left: 1px solid #2a2e42;
-            background: #151828;
+            border-left: 1px solid var(--border-color);
+            background: var(--bg-panel);
         }
+
         .review-title {
-            color: #ffc857;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 16px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
         }
+
         .color-key-label {
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 12px;
-            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
+
         .color-key-item {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 14px;
-            color: #c0c0d0;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255,255,255,0.05);
         }
+
         .color-icon {
             display: inline-block;
-            width: 16px;
+            width: 20px;
             text-align: center;
-            margin-right: 8px;
+            margin-right: 12px;
             font-weight: bold;
+            font-size: 16px;
         }
-        .hl-green { color: #4ade80; }
-        .hl-red { color: #f87171; }
-        .hl-blue { color: #3b82f6; }
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1a1d2e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3e5a8a;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #5a7dab;
-        }
-        .footer-credits {
-            position: absolute;
-            bottom: 15px;
-            width: 100%;
+
+        .hl-green { color: var(--success); }
+        .hl-red { color: var(--error); }
+        .hl-blue { color: var(--text-secondary); font-style: italic; }
+
+        .success-box {
+            display: none;
+            margin: 0;
+            padding: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border-top: 1px solid rgba(34, 197, 94, 0.2);
             text-align: center;
-            color: #4b5563;
-            font-size: 12px;
-            pointer-events: none;
+        }
+
+        .success-box.active {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        /* --- Modern Component Library Custom Styles --- */
+        .api-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 4px;
+        }
+
+        .api-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .api-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .api-tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .api-tab-btn.active {
+            color: var(--accent-primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .api-panel {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        .api-panel.active {
+            display: flex;
+        }
+
+        .api-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: border-color var(--transition-fast);
+        }
+
+        .api-card:hover {
+            border-color: #333338;
+        }
+
+        .api-card-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .api-namespace {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .api-badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .badge-core { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .badge-rev { background: rgba(234, 179, 8, 0.15); color: #facc15; }
+        .badge-ctre { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .badge-misc { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+
+        .api-class-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .api-class-item {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .api-class-name {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-primary);
+            background: rgba(59, 130, 246, 0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .api-class-desc {
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 <div id="mainMenu" class="menu-view">
     <h1>FRC Basic Code Academy</h1>
-    <p>Choose a Category</p>
+    <p>Select a learning path to master robot programming</p>
     <div class="menu-buttons">
         <button id="menuControllersBtn" class="btn">Controllers</button>
         <button id="menuMotorsBtn" class="btn">Motors</button>
     </div>
     <div class="footer-credits">
-        &copy; 2026 Holden. All rights reserved. | Project Affiliation: FRC Team 9607 (RJR CyberDemons)
+        &copy; 2026 Holden. All rights reserved. | Made by Holden on FRC Team 9607 (RJR CyberDemons)
     </div>
 </div>
 
 <div id="teachingView" class="teaching-view">
     <div class="top-bar">
-        <button id="mainMenuBtn" class="btn">← Main Menu</button>
-        <button id="libsBtn" class="btn">Libraries</button>
+        <button id="mainMenuBtn" class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Main Menu
+        </button>
+        <button id="libsBtn" class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+            API Libraries
+        </button>
     </div>
     <div class="main-split">
         <div class="editor-panel">
-            <div class="panel-header">Your Code (Edit here)</div>
+            <div class="panel-header">Workspace</div>
             <textarea id="codeEditor" spellcheck="false"></textarea>
             <div class="editor-actions">
-                <button id="resetSkeletonBtn" class="btn">Reset Skeleton</button>
+                <button id="resetSkeletonBtn" class="btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Reset Code
+                </button>
             </div>
         </div>
         <div class="instructions-panel">
             <div class="panel-header" id="categoryTitle">Learning Guide</div>
             <div id="instructionsArea" class="instructions-area"></div>
             <div class="button-group">
-                <button id="doItMyselfBtn" class="btn">Do It Myself</button>
-                <button id="checkBtn" class="btn" disabled>Check My Code</button>
-                <button id="solutionBtn" class="btn" disabled>Solution</button>
+                <button id="doItMyselfBtn" class="btn">Start Coding</button>
+                <button id="checkBtn" class="btn" disabled>Verify Code</button>
+                <button id="solutionBtn" class="btn" disabled>View Solution</button>
             </div>
-            <div id="feedbackLabel" class="feedback">Select a lesson and press 'Do It Myself' to start coding.</div>
+            <div id="feedbackLabel" class="feedback">Select a lesson to begin.</div>
         </div>
     </div>
 </div>
@@ -358,18 +644,15 @@
             <div class="modal-left-col">
                 <div id="modalCodeArea" class="modal-code-area"></div>
                 
-                <div id="successBox" class="success-box">
-                    <span style="color: #4ade80; font-weight: bold; font-size: 18px;">✅ Code is Correct!</span><br>
-                    <button id="modalMainMenuBtn" class="btn" style="margin-top: 15px;">Main Menu</button>
-                </div>
+                <div id="successBox" class="success-box"></div>
             </div>
 
             <div id="modalReviewPanel" class="modal-review-panel">
-                <div class="review-title">Review Panel</div>
-                <div class="color-key-label">Color Key:</div>
-                <div class="color-key-item"><span class="color-icon hl-green">✔</span> <span>Correct Code</span></div>
-                <div class="color-key-item"><span class="color-icon hl-red">✘</span> <span>Errors to Fix</span></div>
-                <div class="color-key-item"><span class="color-icon hl-blue">💬</span> <span>Comments</span></div>
+                <div class="review-title">Diagnostics</div>
+                <div class="color-key-label">Syntax Legend</div>
+                <div class="color-key-item"><span class="color-icon hl-green">✓</span> <span>Correct Code</span></div>
+                <div class="color-key-item"><span class="color-icon hl-red">✕</span> <span>Errors / Missing</span></div>
+                <div class="color-key-item"><span class="color-icon hl-blue">/</span> <span>Comments</span></div>
             </div>
         </div>
     </div>
@@ -377,13 +660,10 @@
 
 <script>
     // ---------- State and Navigation ----------
-    let selectedCategory = null;      // "Controllers" or "Motors"
-    let selectedMotor = null;         // "NEO" or "Kraken"
-    let selectedMotorLesson = null;   // "Define", "Activate", "Tank", "Tank6"
-    let normalInstructions = "";
+    let selectedCategory = null;      
+    let selectedMotor = null;         
+    let selectedMotorLesson = null;
     let editor = document.getElementById('codeEditor');
-    let editorEditable = false;
-
     let historyStack = [];
 
     const mainMenuDiv = document.getElementById('mainMenu');
@@ -399,7 +679,6 @@
     const menuControllersBtn = document.getElementById('menuControllersBtn');
     const menuMotorsBtn = document.getElementById('menuMotorsBtn');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
-    const modalMainMenuBtn = document.getElementById('modalMainMenuBtn');
     
     // UI Elements
     const categoryTitle = document.getElementById('categoryTitle');
@@ -417,7 +696,6 @@
         teachingViewDiv.style.display = 'flex';
         editor.value = "// Select a lesson from the side menu to begin.";
         editor.readOnly = true;
-        editorEditable = false;
         categoryTitle.innerText = "Learning Guide";
         instructionsArea.innerHTML = "";
         doItMyselfBtn.disabled = true;
@@ -437,14 +715,14 @@
         if (editor) editor.readOnly = true;
     }
 
-    // ---------- Sub‑menus ----------
+    // ---------- Sub-menus ----------
     function showControllersLessonMenu() {
         historyStack.push('controllersLessonMenu');
         instructionsArea.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                <h2 style="color: #ffc857;">Controllers Lesson</h2>
-                <p style="margin: 10px 0; text-align: center;">Learn how to define a CommandXboxController in your robot code.</p>
-                <button class="btn" id="startControllerBtn" style="margin: 20px;">Start Controller Lesson</button>
+                <h2 style="color: var(--text-primary); margin-bottom: 8px;">Controllers Lesson</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 24px;">Learn how to define a CommandXboxController in your robot code.</p>
+                <button class="btn" id="startControllerBtn">Start Controller Lesson</button>
             </div>
         `;
         categoryTitle.innerText = "Select Lesson";
@@ -455,8 +733,8 @@
         historyStack.push('motorTypeMenu');
         instructionsArea.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                <h2 style="color: #ffc857; margin-bottom: 20px;">Select Motor Type</h2>
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                <h2 style="color: var(--text-primary); margin-bottom: 24px;">Select Motor Type</h2>
+                <div style="display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 250px;">
                     <button class="btn" id="neoBtn">NEO Motor (REV)</button>
                     <button class="btn" id="krakenBtn">Kraken Motor (CTRE)</button>
                 </div>
@@ -471,9 +749,9 @@
         historyStack.push('motorLessonMenu');
         instructionsArea.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                <h2 style="color: #ffc857;">Select Motor Lesson</h2>
-                <p style="margin-bottom: 10px;">Motor: ${selectedMotor}</p>
-                <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px;">
+                <h2 style="color: var(--text-primary); margin-bottom: 8px;">Select Motor Lesson</h2>
+                <p style="margin-bottom: 24px; color: var(--accent-secondary); font-size: 13px; font-weight: 600; text-transform: uppercase;">Target: ${selectedMotor}</p>
+                <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                     <button class="btn" id="defineLesson">1. Define a Motor</button>
                     <button class="btn" id="activateLesson">2. Activate a Single Motor</button>
                     <button class="btn" id="tankLesson">3. 2 Motor Tank Drive (Arcade)</button>
@@ -494,13 +772,12 @@
         categoryTitle.innerText = "Controllers | Define Xbox Controllers";
         editor.value = getControllersSolution();
         editor.readOnly = true;
-        editorEditable = false;
-        instructionsArea.innerText = "Task: Add two CommandXboxController variables to the Robot class.\n\nName them:\n  - driverController (port 0)\n  - operatorController (port 1)\n\nPress 'Do It Myself', then write the declarations.";
+        instructionsArea.innerHTML = "<h3 style='color: var(--text-primary); margin-bottom: 12px;'>Task Requirements:</h3><p>Add two CommandXboxController variables to the Robot class.</p><br><p><strong>Name them:</strong></p><ul style='margin-left: 20px; margin-top: 8px;'><li>driverController (port 0)</li><li>operatorController (port 1)</li></ul><br><p style='color: var(--accent-primary); font-weight: 500;'>Press 'Start Coding', then write the declarations.</p>";
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
-        feedbackLabel.innerText = "Press 'Do It Myself' to start coding.";
+        feedbackLabel.innerText = "Press 'Start Coding' to begin.";
     }
 
     function startMotorLesson() {
@@ -514,29 +791,28 @@
         categoryTitle.innerText = `${selectedMotor} | ${lessonName}`;
         editor.value = getMotorSolution();
         editor.readOnly = true;
-        editorEditable = false;
         
         const isNEO = selectedMotor === "NEO";
         const motorClass = isNEO ? "SparkMax" : "TalonFX";
         
-        let sb = `Task: ${lessonName}\n\n`;
+        let sb = `<h3 style='color: var(--text-primary); margin-bottom: 12px;'>Task: ${lessonName}</h3><p>`;
         if (selectedMotorLesson === "Define") {
-            sb += `Declare and instantiate a ${motorClass} variable inline.\nName: m_motor, CAN ID: 1`;
+            sb += `Declare and instantiate a <strong>${motorClass}</strong> variable inline.<br><br>Name: m_motor<br>CAN ID: 1`;
         } else if (selectedMotorLesson === "Activate") {
-            sb += "Add motor declaration and bind operatorController button B.\nRun motor at 0.5 speed when held and stop when released.";
+            sb += "Add motor declaration and bind operatorController button B.<br>Run motor at 0.5 speed when held and stop when released.";
         } else if (selectedMotorLesson === "Tank") {
-            sb += "Add left/right motor declarations and implement arcade drive in teleopPeriodic().\nLeft ID 1, Right ID 2.";
+            sb += "Add left/right motor declarations and implement arcade drive in teleopPeriodic().<br><br>Left ID: 1<br>Right ID: 2.";
         } else {
             sb += "Declare 3 left and 3 right motors. Set followers properly and configure inverted sides. Bind arcade drive axes to teleopPeriodic.";
         }
-        sb += "\n\nPress 'Do It Myself', then write the missing code.";
+        sb += "</p><br><p style='color: var(--accent-primary); font-weight: 500;'>Press 'Start Coding', then write the missing code.</p>";
+        instructionsArea.innerHTML = sb;
         
-        instructionsArea.innerText = sb;
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
-        feedbackLabel.innerText = "Press 'Do It Myself' to start coding.";
+        feedbackLabel.innerText = "Press 'Start Coding' to begin.";
     }
 
     // ----- Code Generators -----
@@ -545,7 +821,6 @@
     }
 
     function getMotorSolution() {
-        // --- 6 Motor Tank Drive Specific Logic ---
         if (selectedMotorLesson === "Tank6") {
             if (selectedMotor === "NEO") {
                 return `import edu.wpi.first.wpilibj.TimedRobot;
@@ -554,9 +829,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkBase.PersistMode;
-
 public class Robot extends TimedRobot {
-  // 1. Define your 6 Motor Controllers (NEOs use Brushless)
   private static final int kLeftLeadID = 1;
   private static final int kLeftFollow1ID = 2;
   private static final int kLeftFollow2ID = 3;
@@ -573,10 +846,8 @@ public class Robot extends TimedRobot {
 
   private final XboxController m_controller = new XboxController(0);
   private DifferentialDrive m_robotDrive;
-
   @Override
   public void robotInit() {
-    // Initialize motors
     m_leftLead = new SparkMax(kLeftLeadID, MotorType.kBrushless);
     m_leftFollow1 = new SparkMax(kLeftFollow1ID, MotorType.kBrushless);
     m_leftFollow2 = new SparkMax(kLeftFollow2ID, MotorType.kBrushless);
@@ -584,26 +855,18 @@ public class Robot extends TimedRobot {
     m_rightLead = new SparkMax(kRightLeadID, MotorType.kBrushless);
     m_rightFollow1 = new SparkMax(kRightFollow1ID, MotorType.kBrushless);
     m_rightFollow2 = new SparkMax(kRightFollow2ID, MotorType.kBrushless);
-
-    // Set Followers so only the lead motors need direct commands
     m_leftFollow1.follow(m_leftLead);
     m_leftFollow2.follow(m_leftLead);
     m_rightFollow1.follow(m_rightLead);
     m_rightFollow2.follow(m_rightLead);
 
-    // Invert the right side motors so they spin opposite the left side
     m_rightLead.setInverted(true);
 
-    // Initialize the WPILib DifferentialDrive object
     m_robotDrive = new DifferentialDrive(m_leftLead, m_rightLead);
-  }
+}
 
   @Override
   public void teleopPeriodic() {
-    // Drive using a single controller joystick (e.g., Left Stick)
-    // XboxController.getLeftY() controls forward/backward (Throttle)
-    // XboxController.getLeftX() controls left/right (Turn)
-    
     m_robotDrive.arcadeDrive(-m_controller.getLeftY(), m_controller.getLeftX());
   }
 }`;
@@ -616,9 +879,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-
 public class Robot extends TimedRobot {
-  // 1. Define your 6 Motor Controllers (Kraken uses TalonFX)
   private static final int kLeftLeadID = 1;
   private static final int kLeftFollow1ID = 2;
   private static final int kLeftFollow2ID = 3;
@@ -629,44 +890,37 @@ public class Robot extends TimedRobot {
   private final TalonFX m_leftLead = new TalonFX(kLeftLeadID);
   private final TalonFX m_leftFollow1 = new TalonFX(kLeftFollow1ID);
   private final TalonFX m_leftFollow2 = new TalonFX(kLeftFollow2ID);
-  
   private final TalonFX m_rightLead = new TalonFX(kRightLeadID);
   private final TalonFX m_rightFollow1 = new TalonFX(kRightFollow1ID);
   private final TalonFX m_rightFollow2 = new TalonFX(kRightFollow2ID);
 
   private final XboxController m_controller = new XboxController(0);
-
   @Override
   public void robotInit() {
-    // Set Followers so only the lead motors need direct commands
     m_leftFollow1.setControl(new Follower(m_leftLead.getDeviceID(), false));
     m_leftFollow2.setControl(new Follower(m_leftLead.getDeviceID(), false));
     m_rightFollow1.setControl(new Follower(m_rightLead.getDeviceID(), false));
     m_rightFollow2.setControl(new Follower(m_rightLead.getDeviceID(), false));
 
-    // Invert the right side motors so they spin opposite the left side
     var rightConfig = new MotorOutputConfigs();
     rightConfig.Inverted = InvertedValue.Clockwise_Positive;
     m_rightLead.getConfigurator().apply(rightConfig);
-  }
+}
 
   @Override
   public void teleopPeriodic() {
-    // Drive using a single controller joystick (e.g., Left Stick)
     double forward = -m_controller.getLeftY();
     double turn = m_controller.getLeftX();
-    
     double leftSpeed = MathUtil.clamp(forward + turn, -1.0, 1.0);
     double rightSpeed = MathUtil.clamp(forward - turn, -1.0, 1.0);
 
     m_leftLead.setControl(new DutyCycleOut(leftSpeed));
     m_rightLead.setControl(new DutyCycleOut(rightSpeed));
-  }
+}
 }`;
             }
         }
 
-        // --- Standard (Define/Activate/2-Motor Tank) Logic ---
         const isNEO = selectedMotor === "NEO";
         const motorClass = isNEO ? "SparkMax" : "TalonFX";
         const motorImport = isNEO ? "import com.revrobotics.spark.SparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;";
@@ -677,12 +931,11 @@ public class Robot extends TimedRobot {
         let sol = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n";
         if (selectedMotorLesson === "Activate") sol += "import edu.wpi.first.wpilibj2.command.RunCommand;\nimport edu.wpi.first.wpilibj2.command.InstantCommand;\n";
         else if (selectedMotorLesson === "Tank") sol += "import edu.wpi.first.math.MathUtil;\n";
-        
         sol += motorImport + "\n";
         if (!isNEO) sol += controlImport;
         if (isNEO && (selectedMotorLesson === "Define" || selectedMotorLesson === "Activate")) sol += "import com.revrobotics.spark.SparkLowLevel.MotorType;\n";
-        
         sol += "\npublic class Robot extends TimedRobot {\n";
+        
         if (selectedMotorLesson === "Define" || selectedMotorLesson === "Activate") {
             sol += `    // Motor Declaration\n    private final ${motorClass} m_motor = new ${motorClass}${motorParams1};\n`;
         } else {
@@ -690,7 +943,6 @@ public class Robot extends TimedRobot {
             sol += `    private final ${motorClass} m_rightMotor = new ${motorClass}${motorParams2};\n`;
         }
         sol += "    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n";
-        
         if (selectedMotorLesson === "Define") {
             sol += "    @Override\n    public void robotInit() { }\n";
         } else if (selectedMotorLesson === "Activate") {
@@ -700,7 +952,7 @@ public class Robot extends TimedRobot {
             sol += isNEO ? "                m_motor.set(0.0);\n" : "                m_motor.setControl(new DutyCycleOut(0.0));\n";
             sol += "            }));\n    }\n";
         } else {
-            sol += "    @Override\n    public void teleopPeriodic() {\n        // Arcade Drive Math\n        double forward = -driverController.getLeftY();\n        double turn = driverController.getLeftX();\n        double leftSpeed = forward + turn;\n        double rightSpeed = forward - turn;\n        leftSpeed = MathUtil.clamp(leftSpeed, -1.0, 1.0);\n        rightSpeed = MathUtil.clamp(rightSpeed, -1.0, 1.0);\n";
+            sol += "    @Override\n    public void teleopPeriodic() {\n        double forward = -driverController.getLeftY();\n        double turn = driverController.getLeftX();\n        double leftSpeed = forward + turn;\n        double rightSpeed = forward - turn;\n        leftSpeed = MathUtil.clamp(leftSpeed, -1.0, 1.0);\n        rightSpeed = MathUtil.clamp(rightSpeed, -1.0, 1.0);\n";
             if (isNEO) {
                 sol += "        m_leftMotor.set(leftSpeed);\n        m_rightMotor.set(rightSpeed);\n";
             } else {
@@ -730,7 +982,6 @@ public class Robot extends TimedRobot {
                 skeleton += motorImport + "\n";
                 if (!isNEO) skeleton += controlImport + "\n";
                 if (isNEO && (selectedMotorLesson !== "Tank")) skeleton += "import com.revrobotics.spark.SparkLowLevel.MotorType;\n";
-                
                 skeleton += "\npublic class Robot extends TimedRobot {\n    // TODO: Add motor declarations (inline) here\n    // TODO: Add controller declarations (inline) here\n\n";
                 if (selectedMotorLesson === "Define") skeleton += "    @Override\n    public void robotInit() { }\n";
                 else if (selectedMotorLesson === "Activate") skeleton += "    @Override\n    public void robotInit() {\n        // TODO: Bind operatorController button B\n    }\n";
@@ -741,29 +992,82 @@ public class Robot extends TimedRobot {
         }
         
         editor.readOnly = false;
-        editorEditable = true;
+        editor.focus();
         
-        // Enable interaction buttons
         checkBtn.disabled = false;
         solutionBtn.disabled = false;
         resetSkeletonBtn.disabled = false;
-        
         feedbackLabel.innerText = "Skeleton loaded. Fill in the missing parts.";
+    }
+
+    // ---------- NEW Dynamic Success Box Logic ----------
+    function triggerSuccessBox(isPerfect) {
+        if (isPerfect) {
+            let buttonsHtml = `<button id="modalMainMenuBtn" class="btn" style="margin-top: 12px; background: var(--bg-panel);">Return to Main Menu</button>`;
+            
+            // Inject the Motor Selection button if the user is in a motors lesson
+            if (selectedCategory === "Motors") {
+                buttonsHtml += `<button id="modalMotorMenuBtn" class="btn" style="margin-top: 12px; margin-left: 12px; background: var(--bg-panel);">Motor Selection</button>`;
+            }
+            
+            successBox.innerHTML = `
+                <span style="color: var(--success); font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Code is Correct!
+                </span><br>
+                <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                    ${buttonsHtml}
+                </div>
+            `;
+            
+            successBox.classList.add('active');
+            
+            // Re-bind event listeners for dynamically injected buttons
+            document.getElementById('modalMainMenuBtn').addEventListener('click', () => {
+                closeModal();
+                showMainMenu();
+            });
+            
+            if (selectedCategory === "Motors") {
+                document.getElementById('modalMotorMenuBtn').addEventListener('click', () => {
+                    closeModal();
+                    // Reset Editor UI before switching screen
+                    editor.value = "// Select a lesson from the side menu to begin.";
+                    editor.readOnly = true;
+                    doItMyselfBtn.disabled = true;
+                    checkBtn.disabled = true;
+                    solutionBtn.disabled = true;
+                    resetSkeletonBtn.disabled = true;
+                    feedbackLabel.innerText = "Choose a lesson from the menu above.";
+                    
+                    showMotorTypeMenu();
+                });
+            }
+        } else {
+            successBox.classList.remove('active');
+        }
     }
 
     // ---------- Check My Code ----------
     function showCodeReview() {
-        successBox.classList.remove('active'); // Hide success box if open
         const userCode = editor.value;
         const solution = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
         const solutionLines = solution.split(/\r?\n/).map(l => l.trim());
         const userLines = userCode.split(/\r?\n/);
         let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
 
+        // Robust Perfection Check: trims the full block to ignore trailing whitespace
+        const userCodeClean = userCode.trim();
+        const solCodeClean = solution.trim();
+        const userLinesTrimmed = userCodeClean.split(/\r?\n/).map(l => l.trim());
+        const solLinesTrimmed = solCodeClean.split(/\r?\n/).map(l => l.trim());
+        
+        let perfect = userLinesTrimmed.length === solLinesTrimmed.length && userLinesTrimmed.every((l, idx) => l === solLinesTrimmed[idx]);
+
         let highlightedHTML = "";
         for (let userLine of userLines) {
             let trimmed = userLine.trim();
-            let isCorrect = solutionLines.includes(trimmed);
+            let isCorrect = solutionLines.includes(trimmed) && trimmed !== "";
             let formattedLine = userLine.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             let commentIndex = formattedLine.indexOf("//");
             if (commentIndex !== -1) {
@@ -778,9 +1082,12 @@ public class Robot extends TimedRobot {
         }
 
         modalMainTitle.innerText = "CODE REVIEW";
-        modalSubtitle.innerText = `Lesson Review : ${lessonInfo}`;
+        modalSubtitle.innerText = `Lesson Diagnostics : ${lessonInfo}`;
         modalReviewPanel.style.display = 'flex';
         modalCodeArea.innerHTML = highlightedHTML;
+        
+        triggerSuccessBox(perfect);
+        
         modal.style.display = 'flex';
     }
 
@@ -791,25 +1098,20 @@ public class Robot extends TimedRobot {
         const userLines = userCode.split(/\r?\n/).map(l => l.trim());
         const solLines = solution.split(/\r?\n/);
         let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
-
-        // Check if user's code is perfect
-        let perfect = true;
-        if (userLines.length !== solLines.length) {
-            perfect = false;
-        } else {
-            for (let i = 0; i < userLines.length; i++) {
-                if (userLines[i] !== solLines[i].trim()) {
-                    perfect = false;
-                    break;
-                }
-            }
-        }
+        
+        // Robust Perfection Check
+        const userCodeClean = userCode.trim();
+        const solCodeClean = solution.trim();
+        const userLinesTrimmed = userCodeClean.split(/\r?\n/).map(l => l.trim());
+        const solLinesTrimmed = solCodeClean.split(/\r?\n/).map(l => l.trim());
+        
+        let perfect = userLinesTrimmed.length === solLinesTrimmed.length && userLinesTrimmed.every((l, idx) => l === solLinesTrimmed[idx]);
 
         let highlightedHTML = "";
         for (let i = 0; i < solLines.length; i++) {
             let solLine = solLines[i];
             let trimmedSol = solLine.trim();
-            let userHasLine = userLines.includes(trimmedSol);
+            let userHasLine = userLines.includes(trimmedSol) && trimmedSol !== "";
             let formattedLine = solLine.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             let commentIndex = formattedLine.indexOf("//");
             if (commentIndex !== -1) {
@@ -824,52 +1126,121 @@ public class Robot extends TimedRobot {
         }
 
         modalMainTitle.innerText = "CODE SOLUTION";
-        modalSubtitle.innerText = `Lesson Solution : ${lessonInfo}`;
+        modalSubtitle.innerText = `Reference Solution : ${lessonInfo}`;
         modalReviewPanel.style.display = 'none';
         
-        // Append small hint text if not perfect
         let hintHTML = "";
         if (!perfect) {
-            hintHTML = `<div style="text-align: center; margin-top: 20px;">
-                            <span style="color: #ffc857;">Green = correct, Red = missing/incorrect</span>
+            hintHTML = `<div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                            <span style="color: var(--text-secondary); font-size: 13px;">Green = lines matching your code | Red = missing/incorrect lines</span>
                         </div>`;
         }
 
         modalCodeArea.innerHTML = highlightedHTML + hintHTML;
-
-        // Toggle separate success box state
-        if (perfect) {
-            successBox.classList.add('active');
-        } else {
-            successBox.classList.remove('active');
-        }
-
+        
+        triggerSuccessBox(perfect);
+        
         modal.style.display = 'flex';
     }
 
+    // ---------- NEW INSANELY PROFESSIONAL API LIBRARIES TAB ----------
+    function switchApiTab(tabId) {
+        document.querySelectorAll('.api-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.api-panel').forEach(panel => panel.classList.remove('active'));
+        
+        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
     function showLibraries() {
-        successBox.classList.remove('active'); // Ensure box is hidden
-        modalMainTitle.innerText = "REFERENCE";
-        modalSubtitle.innerText = "Common FRC Libraries";
+        successBox.classList.remove('active');
+        modalMainTitle.innerText = "API REFERENCE";
+        modalSubtitle.innerText = "Interactive Vendor & Framework Libraries Reference Docs";
         modalReviewPanel.style.display = 'none';
         modalCodeArea.innerHTML = `
-<span style="color: #ffc857; font-weight: bold; font-size: 16px;">WPILib (built-in):</span>
-  - edu.wpi.first.wpilibj.* <span style="color:#aaa;">(TimedRobot, Joystick, RobotController, DriverStation)</span>
-  - edu.wpi.first.wpilibj2.command.* <span style="color:#aaa;">(CommandXboxController, RunCommand, InstantCommand, JoystickButton)</span>
-  - edu.wpi.first.math.* <span style="color:#aaa;">(MathUtil, Rotation2d, Translation2d, PIDController)</span>
+<div class="api-container">
+    <div class="api-tabs">
+        <button class="api-tab-btn active" data-tab="wpilib-tab" onclick="switchApiTab('wpilib-tab')">Core WPILib</button>
+        <button class="api-tab-btn" data-tab="rev-tab" onclick="switchApiTab('rev-tab')">REV Robotics</button>
+        <button class="api-tab-btn" data-tab="ctre-tab" onclick="switchApiTab('ctre-tab')">CTRE Phoenix</button>
+        <button class="api-tab-btn" data-tab="misc-tab" onclick="switchApiTab('misc-tab')">Utilities</button>
+    </div>
 
-<br><br><span style="color: #ffc857; font-weight: bold; font-size: 16px;">CTRE Phoenix (Kraken, Falcon):</span>
-  - com.ctre.phoenix6.hardware.TalonFX
-  - com.ctre.phoenix6.controls.DutyCycleOut
-  - com.ctre.phoenix6.controls.PositionVoltage, VelocityVoltage, etc.
+    <div id="wpilib-tab" class="api-panel active">
+        <div class="api-card">
+            <div class="api-card-title">
+                 <span class="api-namespace">edu.wpi.first.wpilibj.*</span>
+                <span class="api-badge badge-core">Core Framework</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">TimedRobot</span><span class="api-class-desc">The primary skeleton controlling robot execution loops (robotInit, teleopPeriodic, etc.).</span></li>
+                <li class="api-class-item"><span class="api-class-name">XboxController</span><span class="api-class-desc">Reads raw directional axis vectors and hardware button states from a mapped layout device.</span></li>
+                <li class="api-class-item"><span class="api-class-name">DriverStation</span><span class="api-class-desc">Central network communication instance querying match details, alliance configs, and game states.</span></li>
+            </ul>
+        </div>
+        <div class="api-card">
+            <div class="api-card-title">
+                <span class="api-namespace">edu.wpi.first.wpilibj2.command.*</span>
+                 <span class="api-badge badge-core">Command Architecture</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">CommandXboxController</span><span class="api-class-desc">Modern wrapper extending controls to bind event triggers synchronously (.whileTrue, .onFalse).</span></li>
+                <li class="api-class-item"><span class="api-class-name">RunCommand</span><span class="api-class-desc">Executes inline functions or method blocks repeatedly until terminated by state flags.</span></li>
+                <li class="api-class-item"><span class="api-class-name">InstantCommand</span><span class="api-class-desc">Runs an assigned block code once then terminates instantly upon initial execution.</span></li>
+            </ul>
+        </div>
+    </div>
 
-<br><br><span style="color: #ffc857; font-weight: bold; font-size: 16px;">REV Robotics (NEO, NEO 550):</span>
-  - com.revrobotics.spark.SparkMax
-  - com.revrobotics.spark.SparkLowLevel.MotorType
-  - com.revrobotics.spark.SparkBase
+    <div id="rev-tab" class="api-panel">
+        <div class="api-card">
+            <div class="api-card-title">
+                <span class="api-namespace">com.revrobotics.spark.*</span>
+                <span class="api-badge badge-rev">REV Hardware</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">SparkMax</span><span class="api-class-desc">Hardware control channel targeting modern brushless NEO motors via specified inline parameters.</span></li>
+                <li class="api-class-item"><span class="api-class-name">SparkLowLevel.MotorType</span><span class="api-class-desc">Configuration enumeration used to assign operation characteristics (e.g., kBrushless).</span></li>
+                <li class="api-class-item"><span class="api-class-name">SparkBase</span><span class="api-class-desc">Root abstract implementation layer driving standard parameter sets across REV motor infrastructure models.</span></li>
+            </ul>
+        </div>
+    </div>
 
-<br><br><span style="color: #ffc857; font-weight: bold; font-size: 16px;">Other useful:</span>
-  - edu.wpi.first.networktables.NetworkTable
+    <div id="ctre-tab" class="api-panel">
+        <div class="api-card">
+            <div class="api-card-title">
+                 <span class="api-namespace">com.ctre.phoenix6.*</span>
+                <span class="api-badge badge-ctre">CTRE v6 System</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">TalonFX</span><span class="api-class-desc">Integrates high-precision configuration pipelines targeting CTRE Kraken 844 or Falcon 500 motor types.</span></li>
+                <li class="api-class-item"><span class="api-class-name">DutyCycleOut</span><span class="api-class-desc">Direct output payload control model defining scaling targets spanning ranges from -1.0 up to 1.0.</span></li>
+                <li class="api-class-item"><span class="api-class-name">Follower</span><span class="api-class-desc">Control assignment referencing designated master device identifiers to pair multi-motor gearboxes.</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="misc-tab" class="api-panel">
+        <div class="api-card">
+            <div class="api-card-title">
+                 <span class="api-namespace">edu.wpi.first.math.*</span>
+                <span class="api-badge badge-misc">Math & Data</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">MathUtil</span><span class="api-class-desc">Exposes helper workflows to bounds-restrict numeric ranges gracefully (e.g., clamp routines).</span></li>
+                <li class="api-class-item"><span class="api-class-name">PIDController</span><span class="api-class-desc">Calculates error-correction outputs using configured proportional, integral, and derivative gains.</span></li>
+            </ul>
+        </div>
+        <div class="api-card">
+            <div class="api-card-title">
+                <span class="api-namespace">edu.wpi.first.networktables.*</span>
+                <span class="api-badge badge-misc">Telemetry</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">NetworkTable</span><span class="api-class-desc">Core data structure managing fast telemetry sync pipelines between driver station dashboards and the coprocessor.</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
         `;
         modal.style.display = 'flex';
     }
@@ -880,38 +1251,26 @@ public class Robot extends TimedRobot {
     }
 
     // ---------- Event Listeners Attached Directly ----------
-    // Top-bar navigation
     mainMenuBtn.addEventListener('click', showMainMenu);
     libsBtn.addEventListener('click', showLibraries);
-
-    // Main Menu category selection
     menuControllersBtn.addEventListener('click', () => {
         selectedCategory = "Controllers";
         showTeachingView();
         historyStack = [];
         showControllersLessonMenu();
     });
-    
     menuMotorsBtn.addEventListener('click', () => {
         selectedCategory = "Motors";
         showTeachingView();
         historyStack = [];
         showMotorTypeMenu();
     });
-
-    // Editor & Instructions action buttons
     resetSkeletonBtn.addEventListener('click', loadSkeletonIntoEditor);
     doItMyselfBtn.addEventListener('click', loadSkeletonIntoEditor);
     checkBtn.addEventListener('click', showCodeReview);
     solutionBtn.addEventListener('click', showExactSolution);
 
-    // Modal navigation
     modalCloseBtn.addEventListener('click', closeModal);
-    modalMainMenuBtn.addEventListener('click', () => {
-        closeModal();
-        showMainMenu();
-    });
-
 </script>
 </body>
 </html>
