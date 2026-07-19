@@ -4,6 +4,7 @@
 
 > [!WARNING]
 > FRC Academy App Version is not up to date, please use the website version @ https://holden9607.github.io/FRC-Academy/
+>
 > The App Version will be updated Soon
 
 ---
