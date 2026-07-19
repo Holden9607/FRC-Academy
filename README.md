@@ -1,5 +1,13 @@
 # FRC Academy: Robot Coding Training
 
+---
+
+> [!WARNING]
+> FRC Academy App Version is not up to date, please use the website version @ https://holden9607.github.io/FRC-Academy/
+> The App Version will be updated Soon
+
+---
+
 [![Download FRCAcademy](https://img.shields.io/badge/Download-FRCAcademy-orange?style=for-the-badge&logo=windows)](https://github.com/Holden9607/FRC-Academy/releases/latest)
 
 **Made by Holden on FRC 9607 RJR CyberDemons**
