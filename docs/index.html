@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRC Basic Code Academy</title>
+    <title>FRC Code Academy</title>
     <style>
-        /* --- CSS Variables for Modern Theming --- */
         :root {
             --bg-main: #09090b;
             --bg-panel: #18181b;
@@ -29,7 +28,6 @@
             --transition-bounce: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* --- Reset & Base --- */
         * {
             margin: 0;
             padding: 0;
@@ -37,7 +35,7 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
             background: var(--bg-main);
             color: var(--text-primary);
             height: 100vh;
@@ -47,7 +45,6 @@
             background-size: 24px 24px;
         }
 
-        /* --- Scrollbars --- */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -99,19 +96,19 @@
             cursor: not-allowed;
         }
 
-        #checkBtn, #doItMyselfBtn, #startControllerBtn, #neoBtn, #krakenBtn {
+        #checkBtn, #doItMyselfBtn, #startControllerBtn, #neoBtn, #krakenBtn, #guidedModeBtn, #unguidedModeBtn, #guidedNextBtn {
             background: var(--accent-primary);
             color: white;
             border: none;
             font-weight: 600;
         }
         #checkBtn:hover:not(:disabled), #doItMyselfBtn:hover:not(:disabled), 
-        #startControllerBtn:hover, #neoBtn:hover, #krakenBtn:hover {
+        #startControllerBtn:hover, #neoBtn:hover, #krakenBtn:hover,
+        #guidedModeBtn:hover, #unguidedModeBtn:hover, #guidedNextBtn:hover {
             background: var(--accent-primary-hover);
             box-shadow: var(--shadow-glow);
         }
 
-        /* --- Main Menu View --- */
         .menu-view {
             display: flex;
             flex-direction: column;
@@ -169,7 +166,6 @@
             letter-spacing: 0.05em;
         }
 
-        /* --- Teaching View (Editor & Instructions) --- */
         .teaching-view {
             display: none;
             flex-direction: column;
@@ -208,6 +204,7 @@
             flex-direction: column;
             overflow: hidden;
             box-shadow: var(--shadow-panel);
+            position: relative;
         }
 
         .editor-panel { flex: 6.5; }
@@ -226,7 +223,7 @@
         }
 
         .panel-header::before {
-            content: '';
+            content: "";
             display: block;
             width: 8px;
             height: 8px;
@@ -238,7 +235,7 @@
             flex: 1;
             background: var(--bg-editor);
             color: var(--text-code);
-            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
             font-size: 15px;
             line-height: 1.6;
             padding: 20px;
@@ -252,11 +249,60 @@
             background: #050505;
         }
 
+        .guided-popup {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            width: 360px;
+            max-width: calc(100% - 40px);
+            background: var(--bg-panel);
+            border: 1px solid var(--accent-primary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-glow);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .guided-header {
+            font-weight: 600;
+            color: var(--accent-primary);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guided-text {
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .guided-text span {
+            display: block;
+            width: 100%;
+            font-family: "JetBrains Mono", monospace !important;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
         .editor-actions {
             padding: 12px 20px;
             text-align: right;
             background: var(--bg-panel);
             border-top: 1px solid var(--border-color);
+            z-index: 10;
         }
 
         .instructions-area {
@@ -267,7 +313,8 @@
             font-size: 15px;
             line-height: 1.7;
             color: var(--text-secondary);
-            white-space: pre-wrap;
+            display: flex;
+            flex-direction: column;
         }
 
         .instructions-area h2 {
@@ -277,7 +324,7 @@
 
         .button-group {
             padding: 20px;
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 12px;
             background: rgba(0,0,0,0.2);
@@ -299,7 +346,6 @@
             text-align: center;
         }
 
-        /* --- Modal (Review & Solution) --- */
         .modal {
             display: none;
             position: fixed;
@@ -383,7 +429,7 @@
         .modal-code-area {
             flex: 1;
             padding: 24px;
-            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
             font-size: 14px;
             line-height: 1.7;
             overflow-y: auto;
@@ -455,7 +501,6 @@
             animation: slideUp 0.3s ease;
         }
 
-        /* --- Modern Component Library Custom Styles --- */
         .api-container {
             display: flex;
             flex-direction: column;
@@ -523,7 +568,7 @@
         }
 
         .api-namespace {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: "JetBrains Mono", monospace;
             font-size: 15px;
             font-weight: 700;
             color: var(--text-primary);
@@ -558,7 +603,7 @@
         }
 
         .api-class-name {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: "JetBrains Mono", monospace;
             color: var(--accent-primary);
             background: rgba(59, 130, 246, 0.06);
             padding: 2px 6px;
@@ -573,7 +618,6 @@
             line-height: 1.4;
         }
 
-        /* --- Animations --- */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -587,7 +631,7 @@
 </head>
 <body>
 <div id="mainMenu" class="menu-view">
-    <h1>FRC Basic Code Academy</h1>
+    <h1>FRC Code Academy</h1>
     <p>Select a learning path to master robot programming</p>
     <div class="menu-buttons">
         <button id="menuControllersBtn" class="btn">Controllers</button>
@@ -613,6 +657,16 @@
         <div class="editor-panel">
             <div class="panel-header">Workspace</div>
             <textarea id="codeEditor" spellcheck="false"></textarea>
+            
+            <div id="guidedPopup" class="guided-popup">
+                <div class="guided-header">
+                    <span>Guided Step <span id="guidedStepCount">1/3</span></span>
+                    <button id="closeGuidedBtn" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px;">&times;</button>
+                </div>
+                <div id="guidedText" class="guided-text">Instruction here.</div>
+                <button id="guidedNextBtn" class="btn">Next Step</button>
+            </div>
+
             <div class="editor-actions">
                 <button id="resetSkeletonBtn" class="btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -623,12 +677,12 @@
         <div class="instructions-panel">
             <div class="panel-header" id="categoryTitle">Learning Guide</div>
             <div id="instructionsArea" class="instructions-area"></div>
-            <div class="button-group">
+            <div class="button-group" id="actionButtonGroup">
                 <button id="doItMyselfBtn" class="btn">Start Coding</button>
                 <button id="checkBtn" class="btn" disabled>Verify Code</button>
                 <button id="solutionBtn" class="btn" disabled>View Solution</button>
             </div>
-            <div id="feedbackLabel" class="feedback">Select a lesson to begin.</div>
+            <div id="feedbackLabel" class="feedback">Choose a lesson from the menu above.</div>
         </div>
     </div>
 </div>
@@ -643,10 +697,8 @@
         <div class="modal-split">
             <div class="modal-left-col">
                 <div id="modalCodeArea" class="modal-code-area"></div>
-                
                 <div id="successBox" class="success-box"></div>
             </div>
-
             <div id="modalReviewPanel" class="modal-review-panel">
                 <div class="review-title">Diagnostics</div>
                 <div class="color-key-label">Syntax Legend</div>
@@ -659,48 +711,54 @@
 </div>
 
 <script>
-    // ---------- State and Navigation ----------
     let selectedCategory = null;      
     let selectedMotor = null;         
     let selectedMotorLesson = null;
-    let normalInstructions = "";
-    let editor = document.getElementById('codeEditor');
+    let isGuidedMode = false;
+    let currentGuidedStep = 0;
+    let guidedSteps = [];
+    
+    let editor = document.getElementById("codeEditor");
     let editorEditable = false;
     let historyStack = [];
 
-    const mainMenuDiv = document.getElementById('mainMenu');
-    const teachingViewDiv = document.getElementById('teachingView');
+    const mainMenuDiv = document.getElementById("mainMenu");
+    const teachingViewDiv = document.getElementById("teachingView");
     
-    // Buttons
-    const mainMenuBtn = document.getElementById('mainMenuBtn');
-    const libsBtn = document.getElementById('libsBtn');
-    const resetSkeletonBtn = document.getElementById('resetSkeletonBtn');
-    const doItMyselfBtn = document.getElementById('doItMyselfBtn');
-    const checkBtn = document.getElementById('checkBtn');
-    const solutionBtn = document.getElementById('solutionBtn');
-    const menuControllersBtn = document.getElementById('menuControllersBtn');
-    const menuMotorsBtn = document.getElementById('menuMotorsBtn');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const mainMenuBtn = document.getElementById("mainMenuBtn");
+    const libsBtn = document.getElementById("libsBtn");
+    const resetSkeletonBtn = document.getElementById("resetSkeletonBtn");
+    const doItMyselfBtn = document.getElementById("doItMyselfBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const solutionBtn = document.getElementById("solutionBtn");
+    const menuControllersBtn = document.getElementById("menuControllersBtn");
+    const menuMotorsBtn = document.getElementById("menuMotorsBtn");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const guidedPopup = document.getElementById("guidedPopup");
+    const closeGuidedBtn = document.getElementById("closeGuidedBtn");
+    const guidedNextBtn = document.getElementById("guidedNextBtn");
     
-    // UI Elements
-    const categoryTitle = document.getElementById('categoryTitle');
-    const instructionsArea = document.getElementById('instructionsArea');
-    const feedbackLabel = document.getElementById('feedbackLabel');
-    const modal = document.getElementById('modal');
-    const modalMainTitle = document.getElementById('modalMainTitle');
-    const modalSubtitle = document.getElementById('modalSubtitle');
-    const modalCodeArea = document.getElementById('modalCodeArea');
-    const modalReviewPanel = document.getElementById('modalReviewPanel');
-    const successBox = document.getElementById('successBox');
+    const categoryTitle = document.getElementById("categoryTitle");
+    const instructionsArea = document.getElementById("instructionsArea");
+    const actionButtonGroup = document.getElementById("actionButtonGroup");
+    const feedbackLabel = document.getElementById("feedbackLabel");
+    const modal = document.getElementById("modal");
+    const modalMainTitle = document.getElementById("modalMainTitle");
+    const modalSubtitle = document.getElementById("modalSubtitle");
+    const modalCodeArea = document.getElementById("modalCodeArea");
+    const modalReviewPanel = document.getElementById("modalReviewPanel");
+    const successBox = document.getElementById("successBox");
 
     function showTeachingView() {
-        mainMenuDiv.style.display = 'none';
-        teachingViewDiv.style.display = 'flex';
-        editor.value = "// Select a lesson from the side menu to begin.";
+        mainMenuDiv.style.display = "none";
+        teachingViewDiv.style.display = "flex";
+        editor.value = "";
         editor.readOnly = true;
         editorEditable = false;
         categoryTitle.innerText = "Learning Guide";
         instructionsArea.innerHTML = "";
+        actionButtonGroup.style.display = "none";
+        guidedPopup.style.display = "none";
         doItMyselfBtn.disabled = true;
         checkBtn.disabled = true;
         solutionBtn.disabled = true;
@@ -709,33 +767,37 @@
     }
 
     function showMainMenu() {
-        mainMenuDiv.style.display = 'flex';
-        teachingViewDiv.style.display = 'none';
+        mainMenuDiv.style.display = "flex";
+        teachingViewDiv.style.display = "none";
         selectedCategory = null;
         selectedMotor = null;
         selectedMotorLesson = null;
+        guidedPopup.style.display = "none";
         historyStack = [];
         if (editor) editor.readOnly = true;
     }
 
-    // ---------- Sub-menus ----------
     function showControllersLessonMenu() {
-        historyStack.push('controllersLessonMenu');
+        historyStack.push("controllersLessonMenu");
         instructionsArea.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
                 <h2 style="color: var(--text-primary); margin-bottom: 8px;">Controllers Lesson</h2>
                 <p style="text-align: center; color: var(--text-secondary); margin-bottom: 24px;">Learn how to define a CommandXboxController in your robot code.</p>
-                <button class="btn" id="startControllerBtn">Start Controller Lesson</button>
+                <button class="btn" id="startControllerBtn">Select Lesson</button>
             </div>
         `;
+        actionButtonGroup.style.display = "none";
         categoryTitle.innerText = "Select Lesson";
-        document.getElementById('startControllerBtn')?.addEventListener('click', () => startControllersLesson());
+        document.getElementById("startControllerBtn")?.addEventListener("click", () => {
+            selectedMotorLesson = "ControllersBasic";
+            showLessonTypeMenu();
+        });
     }
 
     function showMotorTypeMenu() {
-        historyStack.push('motorTypeMenu');
+        historyStack.push("motorTypeMenu");
         instructionsArea.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
                 <h2 style="color: var(--text-primary); margin-bottom: 24px;">Select Motor Type</h2>
                 <div style="display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 250px;">
                     <button class="btn" id="neoBtn">NEO Motor (REV)</button>
@@ -743,186 +805,208 @@
                 </div>
             </div>
         `;
+        actionButtonGroup.style.display = "none";
         categoryTitle.innerText = "Select Motor";
-        document.getElementById('neoBtn')?.addEventListener('click', () => { selectedMotor = "NEO"; showMotorLessonMenu(); });
-        document.getElementById('krakenBtn')?.addEventListener('click', () => { selectedMotor = "Kraken"; showMotorLessonMenu(); });
+        document.getElementById("neoBtn")?.addEventListener("click", () => { selectedMotor = "NEO"; showMotorLessonMenu(); });
+        document.getElementById("krakenBtn")?.addEventListener("click", () => { selectedMotor = "Kraken"; showMotorLessonMenu(); });
     }
 
     function showMotorLessonMenu() {
-        historyStack.push('motorLessonMenu');
+        historyStack.push("motorLessonMenu");
         instructionsArea.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
                 <h2 style="color: var(--text-primary); margin-bottom: 8px;">Select Motor Lesson</h2>
                 <p style="margin-bottom: 24px; color: var(--accent-secondary); font-size: 13px; font-weight: 600; text-transform: uppercase;">Target: ${selectedMotor}</p>
                 <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                     <button class="btn" id="defineLesson">1. Define a Motor</button>
                     <button class="btn" id="activateLesson">2. Activate a Single Motor</button>
                     <button class="btn" id="tankLesson">3. 2 Motor Tank Drive (Arcade)</button>
-                    <button class="btn" id="tank6Lesson">4. 6 Motor Tank Drive (Arcade)</button>
+                    <button class="btn" id="tank4Lesson">4. 4 Motor Tank Drive (Arcade)</button>
                 </div>
             </div>
         `;
+        actionButtonGroup.style.display = "none";
         categoryTitle.innerText = "Select Lesson";
-        document.getElementById('defineLesson')?.addEventListener('click', () => { selectedMotorLesson = "Define"; startMotorLesson(); });
-        document.getElementById('activateLesson')?.addEventListener('click', () => { selectedMotorLesson = "Activate"; startMotorLesson(); });
-        document.getElementById('tankLesson')?.addEventListener('click', () => { selectedMotorLesson = "Tank"; startMotorLesson(); });
-        document.getElementById('tank6Lesson')?.addEventListener('click', () => { selectedMotorLesson = "Tank6"; startMotorLesson(); });
+        
+        document.getElementById("defineLesson")?.addEventListener("click", () => { selectedMotorLesson = "Define"; showLessonTypeMenu(); });
+        document.getElementById("activateLesson")?.addEventListener("click", () => { selectedMotorLesson = "Activate"; showLessonTypeMenu(); });
+        document.getElementById("tankLesson")?.addEventListener("click", () => { selectedMotorLesson = "Tank"; showLessonTypeMenu(); });
+        document.getElementById("tank4Lesson")?.addEventListener("click", () => { selectedMotorLesson = "Tank4"; showLessonTypeMenu(); });
     }
 
-    // ---------- Start lessons ----------
+    function showLessonTypeMenu() {
+        historyStack.push("lessonTypeMenu");
+        instructionsArea.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
+                <h2 style="color: var(--text-primary); margin-bottom: 24px;">Select Lesson Type</h2>
+                <div style="display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 250px;">
+                    <button class="btn" id="guidedModeBtn">Guided Lesson</button>
+                    <button class="btn" id="unguidedModeBtn">Unguided Lesson</button>
+                </div>
+            </div>
+        `;
+        actionButtonGroup.style.display = "none";
+        categoryTitle.innerText = "Select Type";
+        
+        document.getElementById("guidedModeBtn")?.addEventListener("click", () => { 
+            isGuidedMode = true; 
+            startSelectedLesson(); 
+        });
+        document.getElementById("unguidedModeBtn")?.addEventListener("click", () => { 
+            isGuidedMode = false; 
+            startSelectedLesson(); 
+        });
+    }
+
+    function startSelectedLesson() {
+        if (selectedCategory === "Controllers") {
+            startControllersLesson();
+        } else {
+            startMotorLesson();
+        }
+    }
+
+    function getGuidedSteps() {
+        if (selectedCategory === "Controllers") {
+            return [
+                "Step 1: Import the CommandXboxController class from WPILib.<br><br><span>import edu.wpi.first.wpilibj2.command.CommandXboxController;</span>",
+                "Step 2: Declare a private final CommandXboxController named \"driverController\" on port 0.<br><br><span>private final CommandXboxController driverController = new CommandXboxController(0);</span>",
+                "Step 3: Declare another CommandXboxController named \"operatorController\" on port 1.<br><br><span>private final CommandXboxController operatorController = new CommandXboxController(1);</span>",
+                "Step 4: Click \"Verify Code\" when finished!"
+            ];
+        } else if (selectedCategory === "Motors") {
+            if (selectedMotorLesson === "Define") {
+                let step1Hint = selectedMotor === "NEO" ? "import com.revrobotics.spark.SparkMax;\nimport com.revrobotics.spark.SparkLowLevel.MotorType;" : "import com.ctre.phoenix6.hardware.TalonFX;";
+                let step2Hint = selectedMotor === "NEO" ? "private final SparkMax m_motor..." : "private final TalonFX m_motor...";
+                let step3Hint = selectedMotor === "NEO" ? "... = new SparkMax(1, MotorType.kBrushless);" : "... = new TalonFX(1, \"DINO\");";
+                return [
+                    "Step 1: Import the proper hardware class for your selected motor.<br><br><span>" + step1Hint + "</span>",
+                    "Step 2: Inside the Robot class, declare a private final motor object.<br><br><span>" + step2Hint + "</span>",
+                    "Step 3: Instantiate the object, assigning it CAN ID 1.<br><br><span>" + step3Hint + "</span>",
+                    "Step 4: Click \"Verify Code\" to check your syntax!"
+                ];
+            } else if (selectedMotorLesson === "Activate") {
+                let step1Hint = selectedMotor === "NEO" ? "private final SparkMax m_motor = new SparkMax(1, MotorType.kBrushless);" : "private final TalonFX m_motor = new TalonFX(1, \"DINO\");";
+                let step3Hint = selectedMotor === "NEO" ? "m_motor.set(0.5); // inside RunCommand" : "m_motor.setControl(new DutyCycleOut(0.5)); // inside RunCommand";
+                return [
+                    "Step 1: Declare your motor hardware object at the top of the class.<br><br><span>" + step1Hint + "</span>",
+                    "Step 2: Inside robotInit(), bind operatorController button B using .whileTrue() and .onFalse().<br><br><span>operatorController.b().whileTrue(...).onFalse(...)</span>",
+                    "Step 3: Set motor speed to 0.5 when held, and 0.0 when released.<br><br><span>" + step3Hint + "</span>",
+                    "Step 4: Click \"Verify Code\" to check your implementation!"
+                ];
+            } else if (selectedMotorLesson === "Tank") {
+                let step1Hint = selectedMotor === "NEO" ? "private final SparkMax m_leftMotor..." : "private final TalonFX m_leftMotor...";
+                let step4Hint = selectedMotor === "NEO" ? "m_leftMotor.set(leftSpeed);" : "m_leftMotor.setControl(new DutyCycleOut(leftSpeed));";
+                return [
+                    "Step 1: Declare your left and right motor objects at the top.<br><br><span>" + step1Hint + "</span>",
+                    "Step 2: In teleopPeriodic(), read leftY and leftX inputs from the driverController.<br><br><span>double forward = -driverController.getLeftY();</span>",
+                    "Step 3: Calculate leftSpeed and rightSpeed, then use MathUtil.clamp to keep them bound between -1.0 and 1.0.<br><br><span>leftSpeed = MathUtil.clamp(leftSpeed, -1.0, 1.0);</span>",
+                    "Step 4: Apply the calculated speeds to the respective motors.<br><br><span>" + step4Hint + "</span>"
+                ];
+            } else if (selectedMotorLesson === "Tank4") {
+                let step2Hint = selectedMotor === "NEO" ? "m_leftFollow.follow(m_leftLead);" : "m_leftFollow.setControl(new Follower(m_leftLead.getDeviceID(), false));";
+                let step3Hint = selectedMotor === "NEO" ? "m_rightLead.setInverted(true);" : "var rightConfig = new MotorOutputConfigs();\nrightConfig.Inverted = InvertedValue.Clockwise_Positive;";
+                return [
+                    "Step 1: Declare 2 left motors and 2 right motors at the top.<br><br><span>private static final int kLeftLeadID = 1;</span>",
+                    "Step 2: In robotInit(), set the follower motors to strictly follow the lead motors.<br><br><span>" + step2Hint + "</span>",
+                    "Step 3: Invert the right side motors so the robot drives straight rather than spinning.<br><br><span>" + step3Hint + "</span>",
+                    "Step 4: Pass arcade drive inputs to the lead motors inside teleopPeriodic().<br><br><span>double forward = -m_controller.getLeftY();</span>"
+                ];
+            }
+        }
+        return ["Follow the lesson instructions to complete the code!"];
+    }
+
+    function updateGuidedPopup() {
+        if (currentGuidedStep < guidedSteps.length) {
+            document.getElementById("guidedStepCount").innerText = (currentGuidedStep + 1) + " / " + guidedSteps.length;
+            document.getElementById("guidedText").innerHTML = guidedSteps[currentGuidedStep];
+            
+            if (currentGuidedStep === guidedSteps.length - 1) {
+                document.getElementById("guidedNextBtn").innerText = "Finish Guide";
+            } else {
+                document.getElementById("guidedNextBtn").innerText = "Next Step";
+            }
+        } else {
+            guidedPopup.style.display = "none";
+        }
+    }
+
+    guidedNextBtn.addEventListener("click", () => {
+        currentGuidedStep++;
+        updateGuidedPopup();
+    });
+
+    closeGuidedBtn.addEventListener("click", () => {
+        guidedPopup.style.display = "none";
+    });
+
     function startControllersLesson() {
-        historyStack.push('controllersLessonMenu');
+        historyStack.push("controllersLessonMenu");
         categoryTitle.innerText = "Controllers | Define Xbox Controllers";
         editor.value = getControllersSolution();
         editor.readOnly = true;
         editorEditable = false;
-        instructionsArea.innerHTML = "<h3 style='color: var(--text-primary); margin-bottom: 12px;'>Task Requirements:</h3><p>Add two CommandXboxController variables to the Robot class.</p><br><p><strong>Name them:</strong></p><ul style='margin-left: 20px; margin-top: 8px;'><li>driverController (port 0)</li><li>operatorController (port 1)</li></ul><br><p style='color: var(--accent-primary); font-weight: 500;'>Press 'Start Coding', then write the declarations.</p>";
+        
+        let typeBadge = isGuidedMode ? "<span style=\"color: var(--accent-primary); font-weight: bold;\">[GUIDED]</span>" : "<span style=\"color: var(--text-secondary);\">[UNGUIDED]</span>";
+        
+        instructionsArea.innerHTML = "<div><h3 style=\"color: var(--text-primary); margin-bottom: 12px;\">Task Requirements " + typeBadge + "</h3><p>Add two CommandXboxController variables to the Robot class.</p><br><p><strong>Name them:</strong></p><ul style=\"margin-left: 20px; margin-top: 8px;\"><li>driverController (port 0)</li><li>operatorController (port 1)</li></ul><br><p style=\"color: var(--accent-primary); font-weight: 500;\">Press \"Start Coding\", then write the declarations.</p></div>";
+        actionButtonGroup.style.display = "flex";
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
-        feedbackLabel.innerText = "Press 'Start Coding' to begin.";
+        feedbackLabel.innerText = "Press \"Start Coding\" to begin.";
     }
 
     function startMotorLesson() {
-        historyStack.push('motorLessonMenu');
+        historyStack.push("motorLessonMenu");
         let lessonName = "";
         if (selectedMotorLesson === "Define") lessonName = "Define a Motor";
         else if (selectedMotorLesson === "Activate") lessonName = "Activate Single Motor";
         else if (selectedMotorLesson === "Tank") lessonName = "2 Motor Tank Drive (Arcade)";
-        else lessonName = "6 Motor Tank Drive (Arcade)";
+        else lessonName = "4 Motor Tank Drive (Arcade)";
         
-        categoryTitle.innerText = `${selectedMotor} | ${lessonName}`;
+        categoryTitle.innerText = selectedMotor + " | " + lessonName;
         editor.value = getMotorSolution();
         editor.readOnly = true;
         editorEditable = false;
         
         const isNEO = selectedMotor === "NEO";
         const motorClass = isNEO ? "SparkMax" : "TalonFX";
+        let typeBadge = isGuidedMode ? "<span style=\"color: var(--accent-primary); font-weight: bold;\">[GUIDED]</span>" : "<span style=\"color: var(--text-secondary);\">[UNGUIDED]</span>";
         
-        let sb = `<h3 style='color: var(--text-primary); margin-bottom: 12px;'>Task: ${lessonName}</h3><p>`;
+        let sb = "<div><h3 style=\"color: var(--text-primary); margin-bottom: 12px;\">Task: " + lessonName + " " + typeBadge + "</h3><p>";
         if (selectedMotorLesson === "Define") {
-            sb += `Declare and instantiate a <strong>${motorClass}</strong> variable inline.<br><br>Name: m_motor<br>CAN ID: 1`;
+            sb += "Declare and instantiate a <strong>" + motorClass + "</strong> variable inline.<br><br>Name: m_motor<br>CAN ID: 1";
         } else if (selectedMotorLesson === "Activate") {
             sb += "Add motor declaration and bind operatorController button B.<br>Run motor at 0.5 speed when held and stop when released.";
         } else if (selectedMotorLesson === "Tank") {
             sb += "Add left/right motor declarations and implement arcade drive in teleopPeriodic().<br><br>Left ID: 1<br>Right ID: 2.";
         } else {
-            sb += "Declare 3 left and 3 right motors. Set followers properly and configure inverted sides. Bind arcade drive axes to teleopPeriodic.";
+            sb += "Declare 2 left and 2 right motors. Set followers properly and configure inverted sides. Bind arcade drive axes to teleopPeriodic.";
         }
-        sb += "</p><br><p style='color: var(--accent-primary); font-weight: 500;'>Press 'Start Coding', then write the missing code.</p>";
+        sb += "</p><br><p style=\"color: var(--accent-primary); font-weight: 500;\">Press \"Start Coding\", then write the missing code.</p></div>";
         instructionsArea.innerHTML = sb;
         
+        actionButtonGroup.style.display = "flex";
         doItMyselfBtn.disabled = false;
         checkBtn.disabled = true;
         solutionBtn.disabled = true;
         resetSkeletonBtn.disabled = true;
-        feedbackLabel.innerText = "Press 'Start Coding' to begin.";
+        feedbackLabel.innerText = "Press \"Start Coding\" to begin.";
     }
 
-    // ----- Code Generators -----
     function getControllersSolution() {
-        return "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n\npublic class Robot extends TimedRobot {\n    // Controller Declarations\n    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n    @Override\n    public void robotInit() { }\n}\n";
+        return "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n\npublic class Robot extends TimedRobot {\n    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n    @Override\n    public void robotInit() { }\n}\n";
     }
 
     function getMotorSolution() {
-        if (selectedMotorLesson === "Tank6") {
+        if (selectedMotorLesson === "Tank4") {
             if (selectedMotor === "NEO") {
-                return `import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-public class Robot extends TimedRobot {
-  private static final int kLeftLeadID = 1;
-  private static final int kLeftFollow1ID = 2;
-  private static final int kLeftFollow2ID = 3;
-  private static final int kRightLeadID = 4;
-  private static final int kRightFollow1ID = 5;
-  private static final int kRightFollow2ID = 6;
-
-  private SparkMax m_leftLead;
-  private SparkMax m_leftFollow1;
-  private SparkMax m_leftFollow2;
-  private SparkMax m_rightLead;
-  private SparkMax m_rightFollow1;
-  private SparkMax m_rightFollow2;
-
-  private final XboxController m_controller = new XboxController(0);
-  private DifferentialDrive m_robotDrive;
-  @Override
-  public void robotInit() {
-    m_leftLead = new SparkMax(kLeftLeadID, MotorType.kBrushless);
-    m_leftFollow1 = new SparkMax(kLeftFollow1ID, MotorType.kBrushless);
-    m_leftFollow2 = new SparkMax(kLeftFollow2ID, MotorType.kBrushless);
-    
-    m_rightLead = new SparkMax(kRightLeadID, MotorType.kBrushless);
-    m_rightFollow1 = new SparkMax(kRightFollow1ID, MotorType.kBrushless);
-    m_rightFollow2 = new SparkMax(kRightFollow2ID, MotorType.kBrushless);
-    m_leftFollow1.follow(m_leftLead);
-    m_leftFollow2.follow(m_leftLead);
-    m_rightFollow1.follow(m_rightLead);
-    m_rightFollow2.follow(m_rightLead);
-
-    m_rightLead.setInverted(true);
-
-    m_robotDrive = new DifferentialDrive(m_leftLead, m_rightLead);
-}
-
-  @Override
-  public void teleopPeriodic() {
-    m_robotDrive.arcadeDrive(-m_controller.getLeftY(), m_controller.getLeftX());
-  }
-}`;
+                return "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.XboxController;\nimport edu.wpi.first.wpilibj.drive.DifferentialDrive;\nimport com.revrobotics.spark.SparkMax;\nimport com.revrobotics.spark.SparkLowLevel.MotorType;\n\npublic class Robot extends TimedRobot {\n  private static final int kLeftLeadID = 1;\n  private static final int kLeftFollowID = 2;\n  private static final int kRightLeadID = 3;\n  private static final int kRightFollowID = 4;\n\n  private SparkMax m_leftLead;\n  private SparkMax m_leftFollow;\n  private SparkMax m_rightLead;\n  private SparkMax m_rightFollow;\n\n  private final XboxController m_controller = new XboxController(0);\n  private DifferentialDrive m_robotDrive;\n\n  @Override\n  public void robotInit() {\n    m_leftLead = new SparkMax(kLeftLeadID, MotorType.kBrushless);\n    m_leftFollow = new SparkMax(kLeftFollowID, MotorType.kBrushless);\n    \n    m_rightLead = new SparkMax(kRightLeadID, MotorType.kBrushless);\n    m_rightFollow = new SparkMax(kRightFollowID, MotorType.kBrushless);\n\n    m_leftFollow.follow(m_leftLead);\n    m_rightFollow.follow(m_rightLead);\n\n    m_rightLead.setInverted(true);\n\n    m_robotDrive = new DifferentialDrive(m_leftLead, m_rightLead);\n  }\n\n  @Override\n  public void teleopPeriodic() {\n    m_robotDrive.arcadeDrive(-m_controller.getLeftY(), m_controller.getLeftX());\n  }\n}";
             } else {
-                return `import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.math.MathUtil;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-public class Robot extends TimedRobot {
-  private static final int kLeftLeadID = 1;
-  private static final int kLeftFollow1ID = 2;
-  private static final int kLeftFollow2ID = 3;
-  private static final int kRightLeadID = 4;
-  private static final int kRightFollow1ID = 5;
-  private static final int kRightFollow2ID = 6;
-
-  private final TalonFX m_leftLead = new TalonFX(kLeftLeadID);
-  private final TalonFX m_leftFollow1 = new TalonFX(kLeftFollow1ID);
-  private final TalonFX m_leftFollow2 = new TalonFX(kLeftFollow2ID);
-  private final TalonFX m_rightLead = new TalonFX(kRightLeadID);
-  private final TalonFX m_rightFollow1 = new TalonFX(kRightFollow1ID);
-  private final TalonFX m_rightFollow2 = new TalonFX(kRightFollow2ID);
-
-  private final XboxController m_controller = new XboxController(0);
-  @Override
-  public void robotInit() {
-    m_leftFollow1.setControl(new Follower(m_leftLead.getDeviceID(), false));
-    m_leftFollow2.setControl(new Follower(m_leftLead.getDeviceID(), false));
-    m_rightFollow1.setControl(new Follower(m_rightLead.getDeviceID(), false));
-    m_rightFollow2.setControl(new Follower(m_rightLead.getDeviceID(), false));
-
-    var rightConfig = new MotorOutputConfigs();
-    rightConfig.Inverted = InvertedValue.Clockwise_Positive;
-    m_rightLead.getConfigurator().apply(rightConfig);
-}
-
-  @Override
-  public void teleopPeriodic() {
-    double forward = -m_controller.getLeftY();
-    double turn = m_controller.getLeftX();
-    double leftSpeed = MathUtil.clamp(forward + turn, -1.0, 1.0);
-    double rightSpeed = MathUtil.clamp(forward - turn, -1.0, 1.0);
-
-    m_leftLead.setControl(new DutyCycleOut(leftSpeed));
-    m_rightLead.setControl(new DutyCycleOut(rightSpeed));
-}
-}`;
+                return "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.XboxController;\nimport edu.wpi.first.math.MathUtil;\nimport com.ctre.phoenix6.hardware.TalonFX;\nimport com.ctre.phoenix6.controls.Follower;\nimport com.ctre.phoenix6.controls.DutyCycleOut;\nimport com.ctre.phoenix6.signals.InvertedValue;\nimport com.ctre.phoenix6.configs.MotorOutputConfigs;\n\npublic class Robot extends TimedRobot {\n  private static final int kLeftLeadID = 1;\n  private static final int kLeftFollowID = 2;\n  private static final int kRightLeadID = 3;\n  private static final int kRightFollowID = 4;\n\n  private final TalonFX m_leftLead = new TalonFX(kLeftLeadID);\n  private final TalonFX m_leftFollow = new TalonFX(kLeftFollowID);\n  private final TalonFX m_rightLead = new TalonFX(kRightLeadID);\n  private final TalonFX m_rightFollow = new TalonFX(kRightFollowID);\n\n  private final XboxController m_controller = new XboxController(0);\n\n  @Override\n  public void robotInit() {\n    m_leftFollow.setControl(new Follower(m_leftLead.getDeviceID(), false));\n    m_rightFollow.setControl(new Follower(m_rightLead.getDeviceID(), false));\n\n    var rightConfig = new MotorOutputConfigs();\n    rightConfig.Inverted = InvertedValue.Clockwise_Positive;\n    m_rightLead.getConfigurator().apply(rightConfig);\n  }\n\n  @Override\n  public void teleopPeriodic() {\n    double forward = -m_controller.getLeftY();\n    double turn = m_controller.getLeftX();\n    double leftSpeed = MathUtil.clamp(forward + turn, -1.0, 1.0);\n    double rightSpeed = MathUtil.clamp(forward - turn, -1.0, 1.0);\n\n    m_leftLead.setControl(new DutyCycleOut(leftSpeed));\n    m_rightLead.setControl(new DutyCycleOut(rightSpeed));\n  }\n}";
             }
         }
 
@@ -942,16 +1026,16 @@ public class Robot extends TimedRobot {
         sol += "\npublic class Robot extends TimedRobot {\n";
         
         if (selectedMotorLesson === "Define" || selectedMotorLesson === "Activate") {
-            sol += `    // Motor Declaration\n    private final ${motorClass} m_motor = new ${motorClass}${motorParams1};\n`;
+            sol += "    private final " + motorClass + " m_motor = new " + motorClass + motorParams1 + ";\n";
         } else {
-            sol += `    // Motor Declarations\n    private final ${motorClass} m_leftMotor = new ${motorClass}${motorParams1};\n`;
-            sol += `    private final ${motorClass} m_rightMotor = new ${motorClass}${motorParams2};\n`;
+            sol += "    private final " + motorClass + " m_leftMotor = new " + motorClass + motorParams1 + ";\n";
+            sol += "    private final " + motorClass + " m_rightMotor = new " + motorClass + motorParams2 + ";\n";
         }
         sol += "    private final CommandXboxController driverController = new CommandXboxController(0);\n    private final CommandXboxController operatorController = new CommandXboxController(1);\n\n";
         if (selectedMotorLesson === "Define") {
             sol += "    @Override\n    public void robotInit() { }\n";
         } else if (selectedMotorLesson === "Activate") {
-            sol += "    @Override\n    public void robotInit() {\n        // Bind button B\n        operatorController.b()\n            .whileTrue(new RunCommand(() -> {\n";
+            sol += "    @Override\n    public void robotInit() {\n        operatorController.b()\n            .whileTrue(new RunCommand(() -> {\n";
             sol += isNEO ? "                m_motor.set(0.5);\n" : "                m_motor.setControl(new DutyCycleOut(0.5));\n";
             sol += "            }))\n            .onFalse(new InstantCommand(() -> {\n";
             sol += isNEO ? "                m_motor.set(0.0);\n" : "                m_motor.setControl(new DutyCycleOut(0.0));\n";
@@ -973,8 +1057,8 @@ public class Robot extends TimedRobot {
         if (selectedCategory === "Controllers") {
             editor.value = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n\npublic class Robot extends TimedRobot {\n    // TODO: Add controller declarations here\n\n    @Override\n    public void robotInit() { }\n}\n";
         } else {
-            if (selectedMotorLesson === "Tank6") {
-                editor.value = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.XboxController;\n\npublic class Robot extends TimedRobot {\n    // TODO: Define 6 motors and 1 XboxController\n\n    @Override\n    public void robotInit() {\n        // TODO: Initialize motors and set followers\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // TODO: Implement arcade drive logic\n    }\n}";
+            if (selectedMotorLesson === "Tank4") {
+                editor.value = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.XboxController;\n\npublic class Robot extends TimedRobot {\n    // TODO: Define 4 motors and 1 XboxController\n\n    @Override\n    public void robotInit() {\n        // TODO: Initialize motors and set followers\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // TODO: Implement arcade drive logic\n    }\n}";
             } else {
                 const isNEO = selectedMotor === "NEO";
                 const motorClass = isNEO ? "SparkMax" : "TalonFX";
@@ -1004,18 +1088,23 @@ public class Robot extends TimedRobot {
         solutionBtn.disabled = false;
         resetSkeletonBtn.disabled = false;
         feedbackLabel.innerText = "Skeleton loaded. Fill in the missing parts.";
+
+        if (isGuidedMode) {
+            guidedSteps = getGuidedSteps();
+            currentGuidedStep = 0;
+            updateGuidedPopup();
+            guidedPopup.style.display = "flex";
+        } else {
+            guidedPopup.style.display = "none";
+        }
     }
 
-    // ---------- NEW Dynamic Success Box Logic ----------
     function triggerSuccessBox(isPerfect) {
         if (isPerfect) {
-            let buttonsHtml = `<button id="modalMainMenuBtn" class="btn" style="margin-top: 12px; background: var(--bg-panel);">Return to Main Menu</button>`;
-            
-            // Inject the Motor Selection button if the user is in a motors lesson
+            let buttonsHtml = "<button id=\"modalMainMenuBtn\" class=\"btn\" style=\"margin-top: 12px; background: var(--bg-panel);\">Return to Main Menu</button>";
             if (selectedCategory === "Motors") {
-                buttonsHtml += `<button id="modalMotorMenuBtn" class="btn" style="margin-top: 12px; margin-left: 12px; background: var(--bg-panel);">Motor Selection</button>`;
+                buttonsHtml += "<button id=\"modalMotorMenuBtn\" class=\"btn\" style=\"margin-top: 12px; margin-left: 12px; background: var(--bg-panel);\">Motor Selection</button>";
             }
-            
             successBox.innerHTML = `
                 <span style="color: var(--success); font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -1026,44 +1115,42 @@ public class Robot extends TimedRobot {
                 </div>
             `;
             
-            successBox.classList.add('active');
+            successBox.classList.add("active");
             
-            // Re-bind event listeners for dynamically injected buttons
-            document.getElementById('modalMainMenuBtn').addEventListener('click', () => {
+            document.getElementById("modalMainMenuBtn").addEventListener("click", () => {
                 closeModal();
                 showMainMenu();
             });
             
             if (selectedCategory === "Motors") {
-                document.getElementById('modalMotorMenuBtn').addEventListener('click', () => {
+                document.getElementById("modalMotorMenuBtn").addEventListener("click", () => {
                     closeModal();
-                    // Reset Editor UI before switching screen
-                    editor.value = "// Select a lesson from the side menu to begin.";
+                    editor.value = "";
                     editor.readOnly = true;
                     editorEditable = false;
+                    actionButtonGroup.style.display = "none";
                     doItMyselfBtn.disabled = true;
                     checkBtn.disabled = true;
                     solutionBtn.disabled = true;
                     resetSkeletonBtn.disabled = true;
+                    guidedPopup.style.display = "none";
                     feedbackLabel.innerText = "Choose a lesson from the menu above.";
                     
                     showMotorTypeMenu();
                 });
             }
         } else {
-            successBox.classList.remove('active');
+            successBox.classList.remove("active");
         }
     }
 
-    // ---------- Check My Code ----------
     function showCodeReview() {
         const userCode = editor.value;
         const solution = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
         const solutionLines = solution.split(/\r?\n/).map(l => l.trim());
         const userLines = userCode.split(/\r?\n/);
-        let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
+        let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : selectedMotor + " / " + selectedMotorLesson;
 
-        // Perfection check
         let perfect = true;
         const userLinesTrimmed = userLines.map(l => l.trim());
         if (userLinesTrimmed.length !== solutionLines.length) {
@@ -1087,30 +1174,29 @@ public class Robot extends TimedRobot {
                 let codePart = formattedLine.substring(0, commentIndex);
                 let commentPart = formattedLine.substring(commentIndex);
                 let colorClass = isCorrect ? "hl-green" : "hl-red";
-                highlightedHTML += `<span class="${colorClass}">${codePart}</span><span class="hl-blue">${commentPart}</span><br>`;
+                highlightedHTML += "<span class=\"" + colorClass + "\">" + codePart + "</span><span class=\"hl-blue\">" + commentPart + "</span><br>";
             } else {
                 let colorClass = isCorrect ? "hl-green" : "hl-red";
-                highlightedHTML += `<span class="${colorClass}">${formattedLine}</span><br>`;
+                highlightedHTML += "<span class=\"" + colorClass + "\">" + formattedLine + "</span><br>";
             }
         }
 
         modalMainTitle.innerText = "CODE REVIEW";
-        modalSubtitle.innerText = `Lesson Diagnostics : ${lessonInfo}`;
-        modalReviewPanel.style.display = 'flex';
+        modalSubtitle.innerText = "Lesson Diagnostics : " + lessonInfo;
+        modalReviewPanel.style.display = "flex";
         modalCodeArea.innerHTML = highlightedHTML;
         
         triggerSuccessBox(perfect);
         
-        modal.style.display = 'flex';
+        modal.style.display = "flex";
     }
 
-    // ---------- Exact Solution ----------
     function showExactSolution() {
         const userCode = editor.value;
         const solution = selectedCategory === "Controllers" ? getControllersSolution() : getMotorSolution();
         const userLines = userCode.split(/\r?\n/).map(l => l.trim());
         const solLines = solution.split(/\r?\n/);
-        let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : `${selectedMotor} / ${selectedMotorLesson}`;
+        let lessonInfo = selectedCategory === "Controllers" ? "Controllers" : selectedMotor + " / " + selectedMotorLesson;
         
         let perfect = true;
         if (userLines.length !== solLines.length) {
@@ -1135,54 +1221,50 @@ public class Robot extends TimedRobot {
                 let codePart = formattedLine.substring(0, commentIndex);
                 let commentPart = formattedLine.substring(commentIndex);
                 let colorClass = userHasLine ? "hl-green" : "hl-red";
-                highlightedHTML += `<span class="${colorClass}">${codePart}</span><span class="hl-blue">${commentPart}</span><br>`;
+                highlightedHTML += "<span class=\"" + colorClass + "\">" + codePart + "</span><span class=\"hl-blue\">" + commentPart + "</span><br>";
             } else {
                 let colorClass = userHasLine ? "hl-green" : "hl-red";
-                highlightedHTML += `<span class="${colorClass}">${formattedLine}</span><br>`;
+                highlightedHTML += "<span class=\"" + colorClass + "\">" + formattedLine + "</span><br>";
             }
         }
 
         modalMainTitle.innerText = "CODE SOLUTION";
-        modalSubtitle.innerText = `Reference Solution : ${lessonInfo}`;
-        modalReviewPanel.style.display = 'none';
+        modalSubtitle.innerText = "Reference Solution : " + lessonInfo;
+        modalReviewPanel.style.display = "none";
         
         let hintHTML = "";
         if (!perfect) {
-            hintHTML = `<div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
-                            <span style="color: var(--text-secondary); font-size: 13px;">Green = lines matching your code | Red = missing/incorrect lines</span>
-                        </div>`;
+            hintHTML = "<div style=\"text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);\"><span style=\"color: var(--text-secondary); font-size: 13px;\">Green = lines matching your code | Red = missing/incorrect lines</span></div>";
         }
 
         modalCodeArea.innerHTML = highlightedHTML + hintHTML;
         
         triggerSuccessBox(perfect);
         
-        modal.style.display = 'flex';
+        modal.style.display = "flex";
     }
 
-    // ---------- NEW INSANELY PROFESSIONAL API LIBRARIES TAB ----------
     function switchApiTab(tabId) {
-        document.querySelectorAll('.api-tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.api-panel').forEach(panel => panel.classList.remove('active'));
+        document.querySelectorAll(".api-tab-btn").forEach(btn => btn.classList.remove("active"));
+        document.querySelectorAll(".api-panel").forEach(panel => panel.classList.remove("active"));
         
-        document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-        document.getElementById(tabId).classList.add('active');
+        document.querySelector("[data-tab=\"" + tabId + "\"]").classList.add("active");
+        document.getElementById(tabId).classList.add("active");
     }
 
     function showLibraries() {
-        successBox.classList.remove('active');
+        successBox.classList.remove("active");
         modalMainTitle.innerText = "API REFERENCE";
         modalSubtitle.innerText = "Interactive Vendor & Framework Libraries Reference Docs";
-        modalReviewPanel.style.display = 'none';
+        modalReviewPanel.style.display = "none";
         modalCodeArea.innerHTML = `
 <div class="api-container">
     <div class="api-tabs">
-        <button class="api-tab-btn active" data-tab="wpilib-tab" onclick="switchApiTab('wpilib-tab')">Core WPILib</button>
-        <button class="api-tab-btn" data-tab="rev-tab" onclick="switchApiTab('rev-tab')">REV Robotics</button>
-        <button class="api-tab-btn" data-tab="ctre-tab" onclick="switchApiTab('ctre-tab')">CTRE Phoenix</button>
-        <button class="api-tab-btn" data-tab="misc-tab" onclick="switchApiTab('misc-tab')">Utilities</button>
+        <button class="api-tab-btn active" data-tab="wpilib-tab" onclick="switchApiTab(&quot;wpilib-tab&quot;)">Core WPILib</button>
+        <button class="api-tab-btn" data-tab="rev-tab" onclick="switchApiTab(&quot;rev-tab&quot;)">REV Robotics</button>
+        <button class="api-tab-btn" data-tab="ctre-tab" onclick="switchApiTab(&quot;ctre-tab&quot;)">CTRE Phoenix</button>
+        <button class="api-tab-btn" data-tab="misc-tab" onclick="switchApiTab(&quot;misc-tab&quot;)">Utilities</button>
     </div>
-
     <div id="wpilib-tab" class="api-panel active">
         <div class="api-card">
             <div class="api-card-title">
@@ -1207,7 +1289,6 @@ public class Robot extends TimedRobot {
             </ul>
         </div>
     </div>
-
     <div id="rev-tab" class="api-panel">
         <div class="api-card">
             <div class="api-card-title">
@@ -1221,7 +1302,6 @@ public class Robot extends TimedRobot {
             </ul>
         </div>
     </div>
-
     <div id="ctre-tab" class="api-panel">
         <div class="api-card">
             <div class="api-card-title">
@@ -1235,7 +1315,6 @@ public class Robot extends TimedRobot {
             </ul>
         </div>
     </div>
-
     <div id="misc-tab" class="api-panel">
         <div class="api-card">
             <div class="api-card-title">
@@ -1259,35 +1338,33 @@ public class Robot extends TimedRobot {
     </div>
 </div>
         `;
-        modal.style.display = 'flex';
+        modal.style.display = "flex";
     }
 
     function closeModal() {
-        modal.style.display = 'none';
-        successBox.classList.remove('active');
+        modal.style.display = "none";
+        successBox.classList.remove("active");
     }
 
-    // ---------- Event Listeners Attached Directly ----------
-    mainMenuBtn.addEventListener('click', showMainMenu);
-    libsBtn.addEventListener('click', showLibraries);
-    menuControllersBtn.addEventListener('click', () => {
+    mainMenuBtn.addEventListener("click", showMainMenu);
+    libsBtn.addEventListener("click", showLibraries);
+    menuControllersBtn.addEventListener("click", () => {
         selectedCategory = "Controllers";
         showTeachingView();
         historyStack = [];
         showControllersLessonMenu();
     });
-    menuMotorsBtn.addEventListener('click', () => {
+    menuMotorsBtn.addEventListener("click", () => {
         selectedCategory = "Motors";
         showTeachingView();
         historyStack = [];
         showMotorTypeMenu();
     });
-    resetSkeletonBtn.addEventListener('click', loadSkeletonIntoEditor);
-    doItMyselfBtn.addEventListener('click', loadSkeletonIntoEditor);
-    checkBtn.addEventListener('click', showCodeReview);
-    solutionBtn.addEventListener('click', showExactSolution);
-
-    modalCloseBtn.addEventListener('click', closeModal);
+    resetSkeletonBtn.addEventListener("click", loadSkeletonIntoEditor);
+    doItMyselfBtn.addEventListener("click", loadSkeletonIntoEditor);
+    checkBtn.addEventListener("click", showCodeReview);
+    solutionBtn.addEventListener("click", showExactSolution);
+    modalCloseBtn.addEventListener("click", closeModal);
 </script>
 </body>
 </html>
