@@ -6,7 +6,7 @@
 > * **Tank Drive Code** $\color{red}{\textbf{MAY NOT}}$ be correct and accurate as I joined 9607 when tank was not used, and learned Swerve when I became the Programmer
 >
 >  If you want to use **Swerve Drive** and not **Tank Drive**, there are tutorials on youtube that taught me, here are the programs to use
-> * I recommend using **REV Hardware Client** to setup Neo Motor Swerve, **RHC** is a ***Free*** program
+> * I recommend using **(TO BE ADDED SOON)** to setup Neo Motor Swerve, **(TO BE ADDED SOON)** is a ***(TO BE ADDED SOON)*** program
 > * I recommend using **Phoenix Tuner X** to setup Kraken Motor Swerve, **PTX** is a ***Paid*** program
 > 
 > FRC Academy App Version is not up to date, please use the website version @ https://holden9607.github.io/FRC-Academy/
