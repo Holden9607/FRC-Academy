@@ -4,10 +4,8 @@
 
 > [!WARNING]
 > The **Swerve Lessons** show a simple version of manually setting up Swerve Drive,
->
-> I recommend using **REV Hardware Client** to setup Neo Motor Swerve, **RHC** is a free program
->
-> I recommend using **Phoenix Tuner X** to setup Kraken Motor Swerve, **PTX** is a paid program
+> * I recommend using **REV Hardware Client** to setup Neo Motor Swerve, **RHC** is a free program
+> * I recommend using **Phoenix Tuner X** to setup Kraken Motor Swerve, **PTX** is a paid program
 > 
 > FRC Academy App Version is not up to date, please use the website version @ https://holden9607.github.io/FRC-Academy/
 >
