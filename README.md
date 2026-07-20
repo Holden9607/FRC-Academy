@@ -3,7 +3,7 @@
 ---
 
 > [!WARNING]
-> * **Tank Drive Code** <span style="color:red">**MAY NOT**</span> be correct and accurate as I joined 9607 when tank was not used
+> * **Tank Drive Code** $\color{red}{\textbf{MAY NOT}}$ be correct and accurate as I joined 9607 when tank was not used
 >
 >  The **Swerve Lessons** show a simple version of manually setting up Swerve Drive,
 > * I recommend using **REV Hardware Client** to setup Neo Motor Swerve, **RHC** is a ***Free*** program
