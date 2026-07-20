@@ -96,14 +96,14 @@
             cursor: not-allowed;
         }
 
-        #checkBtn, #doItMyselfBtn, #startControllerBtn, #neoBtn, #krakenBtn, #guidedModeBtn, #unguidedModeBtn, #guidedNextBtn {
+        #checkBtn, #doItMyselfBtn, #startControllerBtn, #neoBtn, #krakenBtn, #cimBtn, #guidedModeBtn, #unguidedModeBtn, #guidedNextBtn {
             background: var(--accent-primary);
             color: white;
             border: none;
             font-weight: 600;
         }
         #checkBtn:hover:not(:disabled), #doItMyselfBtn:hover:not(:disabled), 
-        #startControllerBtn:hover, #neoBtn:hover, #krakenBtn:hover,
+        #startControllerBtn:hover, #neoBtn:hover, #krakenBtn:hover, #cimBtn:hover,
         #guidedModeBtn:hover, #unguidedModeBtn:hover, #guidedNextBtn:hover {
             background: var(--accent-primary-hover);
             box-shadow: var(--shadow-glow);
@@ -802,6 +802,7 @@
                 <div style="display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 250px;">
                     <button class="btn" id="neoBtn">NEO Motor (REV)</button>
                     <button class="btn" id="krakenBtn">Kraken Motor (CTRE)</button>
+                    <button class="btn" id="cimBtn">CIM Motor (PWMSparkMax)</button>
                 </div>
             </div>
         `;
@@ -809,6 +810,7 @@
         categoryTitle.innerText = "Select Motor";
         document.getElementById("neoBtn")?.addEventListener("click", () => { selectedMotor = "NEO"; showMotorLessonMenu(); });
         document.getElementById("krakenBtn")?.addEventListener("click", () => { selectedMotor = "Kraken"; showMotorLessonMenu(); });
+        document.getElementById("cimBtn")?.addEventListener("click", () => { selectedMotor = "CIM"; showMotorLessonMenu(); });
     }
 
     function showMotorLessonMenu() {
@@ -875,19 +877,22 @@
                 "Step 4: Click \"Verify Code\" when finished!"
             ];
         } else if (selectedCategory === "Motors") {
+            const isNEO = selectedMotor === "NEO";
+            const isCIM = selectedMotor === "CIM";
             if (selectedMotorLesson === "Define") {
-                let step1Hint = selectedMotor === "NEO" ? "import com.revrobotics.spark.SparkMax;\nimport com.revrobotics.spark.SparkLowLevel.MotorType;" : "import com.ctre.phoenix6.hardware.TalonFX;";
-                let step2Hint = selectedMotor === "NEO" ? "private final SparkMax m_motor..." : "private final TalonFX m_motor...";
-                let step3Hint = selectedMotor === "NEO" ? "... = new SparkMax(1, MotorType.kBrushless);" : "... = new TalonFX(1, \"DINO\");";
+                let step1Hint = isNEO ? "import com.revrobotics.spark.SparkMax;\nimport com.revrobotics.spark.SparkLowLevel.MotorType;" : (isCIM ? "import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;");
+                let step2Hint = isNEO ? "private final SparkMax m_motor..." : (isCIM ? "private final PWMSparkMax m_motor..." : "private final TalonFX m_motor...");
+                let step3Hint = isNEO ? "... = new SparkMax(1, MotorType.kBrushless);" : (isCIM ? "... = new PWMSparkMax(0);" : "... = new TalonFX(1, \"DINO\");");
+                let finalId = isCIM ? "PWM port 0" : "CAN ID 1";
                 return [
                     "Step 1: Import the proper hardware class for your selected motor.<br><br><span>" + step1Hint + "</span>",
                     "Step 2: Inside the Robot class, declare a private final motor object.<br><br><span>" + step2Hint + "</span>",
-                    "Step 3: Instantiate the object, assigning it CAN ID 1.<br><br><span>" + step3Hint + "</span>",
+                    "Step 3: Instantiate the object, assigning it " + finalId + ".<br><br><span>" + step3Hint + "</span>",
                     "Step 4: Click \"Verify Code\" to check your syntax!"
                 ];
             } else if (selectedMotorLesson === "Activate") {
-                let step1Hint = selectedMotor === "NEO" ? "private final SparkMax m_motor = new SparkMax(1, MotorType.kBrushless);" : "private final TalonFX m_motor = new TalonFX(1, \"DINO\");";
-                let step3Hint = selectedMotor === "NEO" ? "m_motor.set(0.5); // inside RunCommand" : "m_motor.setControl(new DutyCycleOut(0.5)); // inside RunCommand";
+                let step1Hint = isNEO ? "private final SparkMax m_motor = new SparkMax(1, MotorType.kBrushless);" : (isCIM ? "private final PWMSparkMax m_motor = new PWMSparkMax(0);" : "private final TalonFX m_motor = new TalonFX(1, \"DINO\");");
+                let step3Hint = (isNEO || isCIM) ? "m_motor.set(0.5); // inside RunCommand" : "m_motor.setControl(new DutyCycleOut(0.5)); // inside RunCommand";
                 return [
                     "Step 1: Declare your motor hardware object at the top of the class.<br><br><span>" + step1Hint + "</span>",
                     "Step 2: Inside robotInit(), bind operatorController button B using .whileTrue() and .onFalse().<br><br><span>operatorController.b().whileTrue(...).onFalse(...)</span>",
@@ -895,9 +900,9 @@
                     "Step 4: Click \"Verify Code\" to check your implementation!"
                 ];
             } else if (selectedMotorLesson === "Tank") {
-                let step1Hint = selectedMotor === "NEO" ? "private final SparkMax m_leftMotor..." : "private final TalonFX m_leftMotor...";
-                let step2Hint = selectedMotor === "NEO" ? "SparkMaxConfig rightConfig = new SparkMaxConfig();\nrightConfig.inverted(true);\nm_rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);" : "var rightConfig = new MotorOutputConfigs();\nrightConfig.Inverted = InvertedValue.Clockwise_Positive;\nm_rightMotor.getConfigurator().apply(rightConfig);";
-                let step5Hint = selectedMotor === "NEO" ? "m_leftMotor.set(leftSpeed);" : "m_leftMotor.setControl(new DutyCycleOut(leftSpeed));";
+                let step1Hint = isNEO ? "private final SparkMax m_leftMotor..." : (isCIM ? "private final PWMSparkMax m_leftMotor..." : "private final TalonFX m_leftMotor...");
+                let step2Hint = isNEO ? "SparkMaxConfig rightConfig = new SparkMaxConfig();\nrightConfig.inverted(true);\nm_rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);" : (isCIM ? "m_rightMotor.setInverted(true);" : "var rightConfig = new MotorOutputConfigs();\nrightConfig.Inverted = InvertedValue.Clockwise_Positive;\nm_rightMotor.getConfigurator().apply(rightConfig);");
+                let step5Hint = (isNEO || isCIM) ? "m_leftMotor.set(leftSpeed);" : "m_leftMotor.setControl(new DutyCycleOut(leftSpeed));";
                 return [
                     "Step 1: Declare your left and right motor objects at the top.<br><br><span>" + step1Hint + "</span>",
                     "Step 2: In robotInit(), configure the right motor to be inverted.<br><br><span>" + step2Hint + "</span>",
@@ -906,13 +911,15 @@
                     "Step 5: Apply the calculated speeds to the respective motors.<br><br><span>" + step5Hint + "</span>"
                 ];
             } else if (selectedMotorLesson === "Tank4") {
-                let step2Hint = selectedMotor === "NEO" ? "SparkMaxConfig leftFollowConfig = new SparkMaxConfig();\nleftFollowConfig.follow(m_leftLead);\nm_leftFollow.configure(leftFollowConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);" : "m_leftFollow.setControl(new Follower(m_leftLead.getDeviceID(), false));";
-                let step3Hint = selectedMotor === "NEO" ? "SparkMaxConfig rightLeadConfig = new SparkMaxConfig();\nrightLeadConfig.inverted(true);\nm_rightLead.configure(rightLeadConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);" : "var rightConfig = new MotorOutputConfigs();\nrightConfig.Inverted = InvertedValue.Clockwise_Positive;\nm_rightLead.getConfigurator().apply(rightConfig);";
+                let step2Hint = isNEO ? "SparkMaxConfig leftFollowConfig = new SparkMaxConfig();\nleftFollowConfig.follow(m_leftLead);\nm_leftFollow.configure(leftFollowConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);" : (isCIM ? "m_leftLead.addFollower(m_leftFollow);" : "m_leftFollow.setControl(new Follower(m_leftLead.getDeviceID(), false));");
+                let step3Hint = isNEO ? "SparkMaxConfig rightLeadConfig = new SparkMaxConfig();\nrightLeadConfig.inverted(true);\nm_rightLead.configure(rightLeadConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);" : (isCIM ? "m_rightLead.setInverted(true);" : "var rightConfig = new MotorOutputConfigs();\nrightConfig.Inverted = InvertedValue.Clockwise_Positive;\nm_rightLead.getConfigurator().apply(rightConfig);");
+                let step4Hint = "m_robotDrive = new DifferentialDrive(m_leftLead, m_rightLead);";
                 return [
-                    "Step 1: Declare 2 left motors and 2 right motors at the top.<br><br><span>private static final int kLeftLeadID = 1;</span>",
+                    "Step 1: Declare 2 left motors and 2 right motors at the top.<br><br><span>private static final int kLeftLeadPort = 0;</span>",
                     "Step 2: In robotInit(), set the follower motors to strictly follow the lead motors.<br><br><span>" + step2Hint + "</span>",
                     "Step 3: Invert the right side motors so the robot drives straight rather than spinning.<br><br><span>" + step3Hint + "</span>",
-                    "Step 4: Pass arcade drive inputs to the lead motors inside teleopPeriodic().<br><br><span>double forward = -m_controller.getLeftY();</span>"
+                    "Step 4: Pass the lead motors into a DifferentialDrive object.<br><br><span>" + step4Hint + "</span>",
+                    "Step 5: Pass arcade drive inputs to the differential drive inside teleopPeriodic().<br><br><span>m_robotDrive.arcadeDrive(-m_controller.getLeftY(), m_controller.getLeftX());</span>"
                 ];
             }
         }
@@ -975,18 +982,23 @@
         editorEditable = false;
         
         const isNEO = selectedMotor === "NEO";
-        const motorClass = isNEO ? "SparkMax" : "TalonFX";
+        const isCIM = selectedMotor === "CIM";
+        const motorClass = isNEO ? "SparkMax" : (isCIM ? "PWMSparkMax" : "TalonFX");
         let typeBadge = isGuidedMode ? "<span style=\"color: var(--accent-primary); font-weight: bold;\">[GUIDED]</span>" : "<span style=\"color: var(--text-secondary);\">[UNGUIDED]</span>";
         
         let sb = "<div><h3 style=\"color: var(--text-primary); margin-bottom: 12px;\">Task: " + lessonName + " " + typeBadge + "</h3><p>";
         if (selectedMotorLesson === "Define") {
-            sb += "Declare and instantiate a <strong>" + motorClass + "</strong> variable inline.<br><br>Name: m_motor<br>CAN ID: 1";
+            sb += "Declare and instantiate a <strong>" + motorClass + "</strong> variable inline.<br><br>Name: m_motor<br>" + (isCIM ? "PWM Port: 0" : "CAN ID: 1");
         } else if (selectedMotorLesson === "Activate") {
             sb += "Add motor declaration and bind operatorController button B.<br>Run motor at 0.5 speed when held and stop when released.";
         } else if (selectedMotorLesson === "Tank") {
-            sb += "Add left/right motor declarations, configure right motor inversion in robotInit(), and implement arcade drive in teleopPeriodic().<br><br>Left ID: 1<br>Right ID: 2.";
+            sb += "Add left/right motor declarations, configure right motor inversion in robotInit(), and implement arcade drive in teleopPeriodic().<br><br>" + (isCIM ? "Left Port: 0<br>Right Port: 1." : "Left ID: 1<br>Right ID: 2.");
         } else {
-            sb += "Declare 2 left and 2 right motors. Configure followers and right-side inversion using the configuration API. Bind arcade drive axes to teleopPeriodic.";
+            if (isCIM) {
+                sb += "Declare 2 left and 2 right PWMSparkMax motors. Use .addFollower() to pair the trailing motors. Configure right-side inversion. Instantiate a DifferentialDrive object with your lead motors and call arcadeDrive() in teleopPeriodic.";
+            } else {
+                sb += "Declare 2 left and 2 right motors. Configure followers and right-side inversion using the configuration API. Bind arcade drive axes to teleopPeriodic.";
+            }
         }
         sb += "</p><br><p style=\"color: var(--accent-primary); font-weight: 500;\">Press \"Start Coding\", then write the missing code.</p></div>";
         instructionsArea.innerHTML = sb;
@@ -1005,7 +1017,42 @@
 
     function getMotorSolution() {
         if (selectedMotorLesson === "Tank4") {
-            if (selectedMotor === "NEO") {
+            if (selectedMotor === "CIM") {
+                return `import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+
+public class Robot extends TimedRobot {
+  private static final int kLeftLeadPort = 0;
+  private static final int kLeftFollowPort = 1;
+  private static final int kRightLeadPort = 2;
+  private static final int kRightFollowPort = 3;
+
+  private final PWMSparkMax m_leftLead = new PWMSparkMax(kLeftLeadPort);
+  private final PWMSparkMax m_leftFollow = new PWMSparkMax(kLeftFollowPort);
+  private final PWMSparkMax m_rightLead = new PWMSparkMax(kRightLeadPort);
+  private final PWMSparkMax m_rightFollow = new PWMSparkMax(kRightFollowPort);
+
+  private final XboxController m_controller = new XboxController(0);
+  private DifferentialDrive m_robotDrive;
+
+  @Override
+  public void robotInit() {
+    m_leftLead.addFollower(m_leftFollow);
+    m_rightLead.addFollower(m_rightFollow);
+
+    m_rightLead.setInverted(true);
+
+    m_robotDrive = new DifferentialDrive(m_leftLead, m_rightLead);
+  }
+
+  @Override
+  public void teleopPeriodic() {
+    m_robotDrive.arcadeDrive(-m_controller.getLeftY(), m_controller.getLeftX());
+  }
+}`;
+            } else if (selectedMotor === "NEO") {
                 return `import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -1105,25 +1152,26 @@ public class Robot extends TimedRobot {
         }
 
         const isNEO = selectedMotor === "NEO";
-        const motorClass = isNEO ? "SparkMax" : "TalonFX";
-        const motorImport = isNEO ? "import com.revrobotics.spark.SparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;";
-        const controlImport = isNEO ? "" : "import com.ctre.phoenix6.controls.DutyCycleOut;\n";
-        const motorParams1 = isNEO ? "(1, MotorType.kBrushless)" : "(1, \"DINO\")";
-        const motorParams2 = isNEO ? "(2, MotorType.kBrushless)" : "(2, \"DINO\")";
+        const isCIM = selectedMotor === "CIM";
+        const motorClass = isNEO ? "SparkMax" : (isCIM ? "PWMSparkMax" : "TalonFX");
+        const motorImport = isNEO ? "import com.revrobotics.spark.SparkMax;" : (isCIM ? "import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;");
+        const controlImport = (isNEO || isCIM) ? "" : "import com.ctre.phoenix6.controls.DutyCycleOut;\n";
+        const motorParams1 = isNEO ? "(1, MotorType.kBrushless)" : (isCIM ? "(0)" : "(1, \"DINO\")");
+        const motorParams2 = isNEO ? "(2, MotorType.kBrushless)" : (isCIM ? "(1)" : "(2, \"DINO\")");
         
         let sol = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n";
         if (selectedMotorLesson === "Activate") sol += "import edu.wpi.first.wpilibj2.command.RunCommand;\nimport edu.wpi.first.wpilibj2.command.InstantCommand;\n";
         else if (selectedMotorLesson === "Tank") sol += "import edu.wpi.first.math.MathUtil;\n";
         
         sol += motorImport + "\n";
-        if (!isNEO) sol += controlImport;
+        if (!isNEO && !isCIM) sol += controlImport;
         
         if (isNEO && (selectedMotorLesson === "Define" || selectedMotorLesson === "Activate" || selectedMotorLesson === "Tank")) sol += "import com.revrobotics.spark.SparkLowLevel.MotorType;\n";
         
         if (selectedMotorLesson === "Tank") {
             if (isNEO) {
                 sol += "import com.revrobotics.spark.config.SparkMaxConfig;\nimport com.revrobotics.spark.SparkBase.ResetMode;\nimport com.revrobotics.spark.SparkBase.PersistMode;\n";
-            } else {
+            } else if (!isCIM) {
                 sol += "import com.ctre.phoenix6.configs.MotorOutputConfigs;\nimport com.ctre.phoenix6.signals.InvertedValue;\n";
             }
         }
@@ -1142,9 +1190,9 @@ public class Robot extends TimedRobot {
             sol += "    @Override\n    public void robotInit() { }\n";
         } else if (selectedMotorLesson === "Activate") {
             sol += "    @Override\n    public void robotInit() {\n        operatorController.b()\n            .whileTrue(new RunCommand(() -> {\n";
-            sol += isNEO ? "                m_motor.set(0.5);\n" : "                m_motor.setControl(new DutyCycleOut(0.5));\n";
+            sol += (isNEO || isCIM) ? "                m_motor.set(0.5);\n" : "                m_motor.setControl(new DutyCycleOut(0.5));\n";
             sol += "            }))\n            .onFalse(new InstantCommand(() -> {\n";
-            sol += isNEO ? "                m_motor.set(0.0);\n" : "                m_motor.setControl(new DutyCycleOut(0.0));\n";
+            sol += (isNEO || isCIM) ? "                m_motor.set(0.0);\n" : "                m_motor.setControl(new DutyCycleOut(0.0));\n";
             sol += "            }));\n    }\n";
         } else {
             sol += "    @Override\n    public void robotInit() {\n";
@@ -1152,6 +1200,8 @@ public class Robot extends TimedRobot {
                 sol += "        SparkMaxConfig rightConfig = new SparkMaxConfig();\n";
                 sol += "        rightConfig.inverted(true);\n";
                 sol += "        m_rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);\n";
+            } else if (isCIM) {
+                sol += "        m_rightMotor.setInverted(true);\n";
             } else {
                 sol += "        var rightConfig = new MotorOutputConfigs();\n";
                 sol += "        rightConfig.Inverted = InvertedValue.Clockwise_Positive;\n";
@@ -1160,7 +1210,7 @@ public class Robot extends TimedRobot {
             sol += "    }\n\n";
             
             sol += "    @Override\n    public void teleopPeriodic() {\n        double forward = -driverController.getLeftY();\n        double turn = driverController.getLeftX();\n        double leftSpeed = forward + turn;\n        double rightSpeed = forward - turn;\n        leftSpeed = MathUtil.clamp(leftSpeed, -1.0, 1.0);\n        rightSpeed = MathUtil.clamp(rightSpeed, -1.0, 1.0);\n";
-            if (isNEO) {
+            if (isNEO || isCIM) {
                 sol += "        m_leftMotor.set(leftSpeed);\n        m_rightMotor.set(rightSpeed);\n";
             } else {
                 sol += "        m_leftMotor.setControl(new DutyCycleOut(leftSpeed));\n        m_rightMotor.setControl(new DutyCycleOut(rightSpeed));\n";
@@ -1176,19 +1226,20 @@ public class Robot extends TimedRobot {
             editor.value = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n\npublic class Robot extends TimedRobot {\n    // TODO: Add controller declarations here\n\n    @Override\n    public void robotInit() { }\n}\n";
         } else {
             if (selectedMotorLesson === "Tank4") {
-                editor.value = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.XboxController;\n\npublic class Robot extends TimedRobot {\n    // TODO: Define 4 motors and 1 XboxController\n\n    @Override\n    public void robotInit() {\n        // TODO: Initialize motors and set followers\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // TODO: Implement arcade drive logic\n    }\n}";
+                editor.value = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj.XboxController;\n\npublic class Robot extends TimedRobot {\n    // TODO: Define 4 motors and 1 XboxController\n\n    @Override\n    public void robotInit() {\n        // TODO: Initialize motors and set followers\n    }\n\n    @Override\n    public void teleopPeriodic() {\n        // TODO: Implement drive logic\n    }\n}";
             } else {
                 const isNEO = selectedMotor === "NEO";
-                const motorClass = isNEO ? "SparkMax" : "TalonFX";
-                const motorImport = isNEO ? "import com.revrobotics.spark.SparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;";
-                const controlImport = isNEO ? "" : "import com.ctre.phoenix6.controls.DutyCycleOut;";
+                const isCIM = selectedMotor === "CIM";
+                const motorClass = isNEO ? "SparkMax" : (isCIM ? "PWMSparkMax" : "TalonFX");
+                const motorImport = isNEO ? "import com.revrobotics.spark.SparkMax;" : (isCIM ? "import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;" : "import com.ctre.phoenix6.hardware.TalonFX;");
+                const controlImport = (isNEO || isCIM) ? "" : "import com.ctre.phoenix6.controls.DutyCycleOut;";
                 
                 let skeleton = "import edu.wpi.first.wpilibj.TimedRobot;\nimport edu.wpi.first.wpilibj2.command.CommandXboxController;\n";
                 if (selectedMotorLesson === "Activate") skeleton += "import edu.wpi.first.wpilibj2.command.RunCommand;\nimport edu.wpi.first.wpilibj2.command.InstantCommand;\n";
                 else if (selectedMotorLesson === "Tank") skeleton += "import edu.wpi.first.math.MathUtil;\n";
                 
                 skeleton += motorImport + "\n";
-                if (!isNEO) skeleton += controlImport + "\n";
+                if (!isNEO && !isCIM) skeleton += controlImport + "\n";
                 
                 if (isNEO && (selectedMotorLesson !== "Tank")) skeleton += "import com.revrobotics.spark.SparkLowLevel.MotorType;\n";
                 if (selectedMotorLesson === "Tank") {
@@ -1197,7 +1248,7 @@ public class Robot extends TimedRobot {
                         skeleton += "import com.revrobotics.spark.config.SparkMaxConfig;\n";
                         skeleton += "import com.revrobotics.spark.SparkBase.ResetMode;\n";
                         skeleton += "import com.revrobotics.spark.SparkBase.PersistMode;\n";
-                    } else {
+                    } else if (!isCIM) {
                         skeleton += "import com.ctre.phoenix6.configs.MotorOutputConfigs;\n";
                         skeleton += "import com.ctre.phoenix6.signals.InvertedValue;\n";
                     }
@@ -1408,6 +1459,16 @@ public class Robot extends TimedRobot {
                 <li class="api-class-item"><span class="api-class-name">TimedRobot</span><span class="api-class-desc">The primary skeleton controlling robot execution loops (robotInit, teleopPeriodic, etc.).</span></li>
                 <li class="api-class-item"><span class="api-class-name">XboxController</span><span class="api-class-desc">Reads raw directional axis vectors and hardware button states from a mapped layout device.</span></li>
                 <li class="api-class-item"><span class="api-class-name">DriverStation</span><span class="api-class-desc">Central network communication instance querying match details, alliance configs, and game states.</span></li>
+            </ul>
+        </div>
+        <div class="api-card">
+            <div class="api-card-title">
+                <span class="api-namespace">edu.wpi.first.wpilibj.motorcontrol.*</span>
+                 <span class="api-badge badge-core">Motor Controls</span>
+            </div>
+            <ul class="api-class-list">
+                <li class="api-class-item"><span class="api-class-name">PWMSparkMax</span><span class="api-class-desc">Controls a SPARK MAX motor controller utilizing standard PWM protocols. Ideal for brushed motors like CIMs.</span></li>
+                <li class="api-class-item"><span class="api-class-name">MotorController</span><span class="api-class-desc">Interface implemented by all WPILib motor controllers containing generic set() and setInverted() methods.</span></li>
             </ul>
         </div>
         <div class="api-card">
