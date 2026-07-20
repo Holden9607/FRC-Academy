@@ -5,7 +5,7 @@
 > [!WARNING]
 > * **Tank Drive Code** $\color{red}{\textbf{MAY NOT}}$ be correct and accurate as I joined 9607 when tank was not used, and learned Swerve when I became the Programmer
 >
->  The **Swerve Lessons** show a simple version of manually setting up Swerve Drive,
+>  If you want to use **Swerve Drive** and not **Tank Drive**, there are tutorials on youtube that taught me, here are the programs to use
 > * I recommend using **REV Hardware Client** to setup Neo Motor Swerve, **RHC** is a ***Free*** program
 > * I recommend using **Phoenix Tuner X** to setup Kraken Motor Swerve, **PTX** is a ***Paid*** program
 > 
