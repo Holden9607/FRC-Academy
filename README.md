@@ -44,10 +44,10 @@ A student-made, basic FRC training tool for learning motor logic and button mapp
 
 ---
 
-## 🛠️ Training Features
-* **NEO (REV) Training:** Practice SparkMax motor control and basic button mapping.
-* **KRAKEN (CTRE) Training:** Learn the Phoenix 6 syntax and DutyCycleOut logic.
-* **Empty-Editor Logic:** Manual code entry to build muscle memory for competition.
+## 🛠️ Types of Motors
+* **NEO (REV)**
+* **KRAKEN (CTRE)**
+* **CIM (PWMSparkMax)**
 
 ---
 
