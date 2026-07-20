@@ -3,7 +3,9 @@
 ---
 
 > [!WARNING]
-> The **Swerve Lessons** show a simple version of manually setting up Swerve Drive,
+> * **Tank Drive Code** **$\color{red}\text{May Not}$** be correct and accurate as I joined 9607 when tank was not used
+>
+>  The **Swerve Lessons** show a simple version of manually setting up Swerve Drive,
 > * I recommend using **REV Hardware Client** to setup Neo Motor Swerve, **RHC** is a ***Free*** program
 > * I recommend using **Phoenix Tuner X** to setup Kraken Motor Swerve, **PTX** is a ***Paid*** program
 > 
